@@ -1,6 +1,6 @@
 import { createPromptModule } from "inquirer";
 import questions from "../prompts/questions.js";
-import createProjectStructure from "../utils/fileHelper.js";
+import createProjectStructure from "../templates/backend/express-mongodb/utils/fileHelper.js";
 
 const prompt = createPromptModule();
 

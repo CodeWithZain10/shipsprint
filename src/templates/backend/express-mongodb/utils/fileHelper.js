@@ -1,19 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import getAuthMiddlewareContent from '../templates/auth/authMiddlewareTemplate.js';
-import userModelTemplate from '../templates/auth/userModelTemplate.js';
-import authRoutesTemplate from '../templates/auth/authRoutesTemplate.js';
-import authControllerTemplate from '../templates/auth/authControllerTemplate.js';
-import appCodeTemplate from '../templates/base/appCodeTemplate.js';
-import serverCodeTemplate from '../templates/base/serverCodeTemplate.js';
-import dbConfigTemplate from '../templates/base/dbConfigTemplate.js';
-import envTemplate from '../templates/base/env/envTemplate.js';
-import packageJsonTemplate from '../templates/base/packages/packageJsonTemplate.js';
-import validateMiddlewareTemplate from '../templates/validation/validateMiddlewareTemplate.js';
-import errHandlerTemplate from '../utils/errors/errorHandlerMiddlewareTemplate.js';
-import authValidationTemplate from '../templates/auth/authValidationTemplate.js';
-import appErrorTemplate from '../utils/errors/appErrorTemplate.js';
-import envValidationTemplate from '../templates/validation/envValidationTemplate.js';
+import getAuthMiddlewareContent from '../auth/authMiddlewareTemplate.js';
+import userModelTemplate from '../auth/userModelTemplate.js';
+import authRoutesTemplate from '../auth/authRoutesTemplate.js';
+import authControllerTemplate from '../auth/authControllerTemplate.js';
+import appCodeTemplate from '../base/appCodeTemplate.js';
+import serverCodeTemplate from '../base/serverCodeTemplate.js';
+import dbConfigTemplate from '../base/dbConfigTemplate.js';
+import envTemplate from '../base/env/envTemplate.js';
+import packageJsonTemplate from '../base/packages/packageJsonTemplate.js';
+import validateMiddlewareTemplate from '../validation/validateMiddlewareTemplate.js';
+import errHandlerTemplate from './errors/errorHandlerMiddlewareTemplate.js';
+import authValidationTemplate from '../auth/authValidationTemplate.js';
+import appErrorTemplate from './errors/appErrorTemplate.js';
+import envValidationTemplate from '../validation/envValidationTemplate.js';
 import userSeederTemplate from './seeders/userSeederTemplate.js';
 
 const createProjectStructure = (projectName, includeAuthentication, includeValidation, includeErrorHandler) => {
@@ -46,8 +46,8 @@ const createProjectStructure = (projectName, includeAuthentication, includeValid
         fs.mkdirSync(path.join(baseDir, 'src', 'utils', 'validation'), { recursive: true })
         fs.writeFileSync(path.join(baseDir, "src", "utils", "validation", "env.validation.js"), envValidationContent)
         
-        fs.writeFileSync(path.join(baseDir, "src", "utils", "seeders", { recursive: true }))
-        fs.writeFileSync(path.join(baseDir, "src", "utils", "seeders", "user.seeder.js"))
+        fs.mkdirSync(path.join(baseDir, "src", "utils", "seeders", { recursive: true }))
+        fs.writeFileSync(path.join(baseDir, "src", "utils", "seeders", "user.seeder.js"), userSeederContent)
     }
 
     if(includeValidation) {
