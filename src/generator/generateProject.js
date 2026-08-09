@@ -42,6 +42,15 @@ import reactAppTemplate from '../templates/frontend/react-vite/base/src/appTempl
 import reactMainTemplate from '../templates/frontend/react-vite/base/src/mainTemplate.js'
 import indexCSSTemplate from '../templates/frontend/react-vite/base/src/indexCSSTemplate.js'
 
+import reactindexHTMLTemplate from '../templates/frontend/react-vite/base/indexHTMLTemplate.js'
+import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esLintConfigTemplate.js';
+import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgnoreTemplate.js';
+import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
+import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
+import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/singinPageTemplate.js';
+
+
+
 /**
  * createProjectStructure
  *
@@ -73,7 +82,7 @@ const generateProject = (answers) => {
     const testsDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'tests'), { recursive: true });
 
     // --- Authentication-related files ---
-    if(includeAuthentication) {
+    if(answers.includeAuthentication) {
         // Generate content from templates
         const userModelContent = userModelTemplate()
         const authRoutesContent = authRoutesTemplate(answers.includeValidation);
@@ -97,7 +106,7 @@ const generateProject = (answers) => {
     }
 
     // --- Validation-related files ---
-    if(includeValidation) {
+    if(answers.includeValidation) {
         const validateMiddlewareContent = validateMiddlewareTemplate();
         const authValidationContent = authValidationTemplate();
         fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils', 'validation'), { recursive: true })
@@ -106,7 +115,7 @@ const generateProject = (answers) => {
     }
 
     // --- Error handler files ---
-    if(includeErrorHandler) {
+    if(answers.includeErrorHandler) {
         const errHandlerContent = errHandlerTemplate();
         const appErrorContent = appErrorTemplate();
         fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'middlewares'), { recursive: true })
@@ -139,28 +148,45 @@ const generateProject = (answers) => {
     const reactAppTemplateContent = reactAppTemplate()
     const reactMainTemplateContent = reactMainTemplate()
     const indexCSSTemplateContent = indexCSSTemplate()
+
+    const esLintConfigTemplateContent = reactESLINTCongigTemplate()
+    const ReactGitIgnoreTemplateContent = reactGitIgnoreTemplate()
+    const ReactIndexHTMLTemplateContent = reactindexHTMLTemplate()
+    const reactPackageJSONTemplateContent = reactPackageJSONTemplate()
+    const reactViteConfigTemplateContent = reactViteConfigTemplate()
+    const reactSignInPageTemplateContent = reactSignInPageTemplate()
     
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
 
     // Create frontend folders under the same project root
     const reactFile = mkdirSync(baseDirReact, { recursive: true })
     const reactSrcDir = mkdirSync(path.join(baseDirReact, "src"), { recursive: true })
-    const assetsDir = mkdirSync(path.join(reactSrcDir, "assets", { recursive: true }))
-    const componentsDir = mkdirSync(path.join(reactSrcDir, "components", { recursive: true }))
-    const pagesDir = mkdirSync(path.join(reactSrcDir, "pages", { recursive: true }))
-    const layoutsDir = mkdirSync(path.join(reactSrcDir, "layouts", { recursive: true }))
-    const reactRoutesDir = mkdirSync(path.join(reactSrcDir, "routes", { recursive: true }))
-    const reactServicesDir = mkdirSync(path.join(reactSrcDir, "services", { recursive: true }))
-    const reactHooksDir = mkdirSync(path.join(reactSrcDir, "hooks", { recursive: true }))
-    const reactUtilsDir = mkdirSync(path.join(reactSrcDir, "utils", { recursive: true }))
+    const assetsDir = mkdirSync(path.join(reactSrcDir, "assets"), { recursive: true })
+    const componentsDir = mkdirSync(path.join(reactSrcDir, "components"), { recursive: true })
+    const layoutsDir = mkdirSync(path.join(reactSrcDir, "layouts"), { recursive: true })
+    const reactRoutesDir = mkdirSync(path.join(reactSrcDir, "routes"), { recursive: true })
+    const reactServicesDir = mkdirSync(path.join(reactSrcDir, "services"), { recursive: true })
+    const reactHooksDir = mkdirSync(path.join(reactSrcDir, "hooks"), { recursive: true })
+    const reactUtilsDir = mkdirSync(path.join(reactSrcDir, "utils"), { recursive: true })
+    const pagesDir = mkdirSync(path.join(reactSrcDir, "pages"), { recursive: true })
+    const authPageDir = mkdirSync(path.join(pagesDir, "auth"), { recursive: true })
 
     // NOTE: writeFileSync expects a path string; these calls currently pass
     // the directory variable as the first argument. If you run into issues
     // creating the frontend files, update the arguments to use
     // path.join(reactSrcDir, 'app.jsx') etc.
-    fs.writeFileSync(reactSrcDir, "app.jsx", reactAppTemplateContent)
-    fs.writeFileSync(reactSrcDir, "main.jsx", reactMainTemplateContent)
-    fs.writeFileSync(reactSrcDir, "index.css", indexCSSTemplateContent)
+
+    fs.writeFileSync(path.join(baseDirReact, "eslint.config.js"), esLintConfigTemplateContent)
+    fs.writeFileSync(path.join(baseDirReact, "index.html"), ReactIndexHTMLTemplateContent)
+    fs.writeFileSync(path.join(baseDirReact, ".gitignore"), ReactGitIgnoreTemplateContent)
+    fs.writeFileSync(path.join(baseDirReact, "package.json"), reactPackageJSONTemplateContent)
+    fs.writeFileSync(path.join(baseDirReact, "vite.config.js"), reactViteConfigTemplateContent)
+
+    fs.writeFileSync(path.join(reactSrcDir, "app.jsx"), reactAppTemplateContent)
+    fs.writeFileSync(path.join(reactSrcDir, "main.jsx"), reactMainTemplateContent)
+    fs.writeFileSync(path.join(reactSrcDir, "index.css"), indexCSSTemplateContent)
+    fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplateContent)
+    
 
 
 }
