@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import  validateEnv  from './playground/backend/backend-mongodb/src/utils/validation/env.validation.js'
+import  validateEnv  from './src/utils/validation/env.validation.js'
 import app from './src/app.js' 
 import connectDB from './src/config/db.js'
 

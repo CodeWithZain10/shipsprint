@@ -1,8 +1,8 @@
 import express from 'express'
 import cors from 'cors'
-import authRoutes from '../playground/backend/backend-mongodb/src/routes/auth.routes.js'
+import authRoutes from './routes/auth.routes.js'
 import cookieParser from 'cookie-parser'
-import { errorHandler } from '../playground/backend/backend-mongodb/src/middlewares/errorHandler.middleware.js'
+import { errorHandler } from './middlewares/errorHandler.middleware.js'
 
 const app = express()
 
