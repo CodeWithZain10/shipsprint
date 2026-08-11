@@ -1,0 +1,9 @@
+playground/
+node_modules/
+.env
+.git/
+.github/
+.vscode/
+
+*.tgz
+npm-debug.log*
