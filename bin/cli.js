@@ -7,8 +7,8 @@ import init from "../src/commands/init.js";
 const prompt = createPromptModule();
 
 program
-    .name("create-backend-scaffold")
-    .description("CLI to scaffold a backend project")
+    .name("create-shipsprint")
+    .description("A modern full-stack project scaffolding CLI")
     .action(init);
 
 program.parse();
