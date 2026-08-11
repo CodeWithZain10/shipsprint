@@ -124,9 +124,16 @@ The repository itself is organized around the generator templates and examples:
 - [ ] Docker support
 - [ ] File upload and media handling
 
+## Team
+
+This project is being developed by:
+
+- Zain Zahid
+- Fiza Noor
+
 ## Contributing
 
-Contributions are welcome. Whether you are fixing a bug, improving the templates, or adding a new feature, we encourage you to read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting changes.
+Contributions are welcome from both team members and collaborators. Whether you are fixing a bug, improving the templates, or adding a new feature, we encourage you to read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting changes.
 
 ## License
 
