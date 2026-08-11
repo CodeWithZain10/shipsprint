@@ -53,7 +53,7 @@ import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esL
 import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgnoreTemplate.js';
 import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
 import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
-import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signinPageTemplate.js';
+
 
 
 
@@ -107,7 +107,7 @@ const generateProject = (answers) => {
         fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils', 'validation'), { recursive: true })
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "validation", "env.validation.js"), envValidationContent)
         
-        fs.mkdirSync(path.join(baseDirBackendExpress, "src", "utils", "seeders", { recursive: true }))
+        fs.mkdirSync(path.join(baseDirBackendExpress, "src", "utils", "seeders"), { recursive: true })
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "seeders", "user.seeder.js"), userSeederContent)
     }
 
@@ -131,8 +131,8 @@ const generateProject = (answers) => {
     }
 
     // --- Core app files ---
-    const appCodeContent = appCodeTemplate(answers.includeAuthentication, answers.includeErrorHandler);
-    const serverCodeContent = serverCodeTemplate(answers.includeAuthentication);
+    const appCodeContent = appCodeTemplate(answers);
+    const serverCodeContent = serverCodeTemplate(answers);
     const dbConfigContent = dbConfigTemplate();
     
     fs.writeFileSync(path.join(baseDirBackendExpress, "src", "app.js"), appCodeContent)
@@ -143,7 +143,7 @@ const generateProject = (answers) => {
     const envContent = envTemplate(answers.includeAuthentication);
     fs.writeFileSync(path.join(baseDirBackendExpress, ".env"), envContent)
 
-    const packageJsonContent = packageJsonTemplate(answers.projectName, answers.includeAuthentication, answers.includeValidation);
+    const packageJsonContent = packageJsonTemplate(answers);
     fs.writeFileSync(path.join(baseDirBackendExpress, "package.json"), packageJsonContent)
 
 
@@ -161,6 +161,9 @@ const generateProject = (answers) => {
     const reactPackageJSONTemplateContent = reactPackageJSONTemplate()
     const reactViteConfigTemplateContent = reactViteConfigTemplate()
     const reactSignInPageTemplateContent = reactSignInPageTemplate()
+    const reactSignUpPageTemplateContent = reactSignupPageTemplate()
+    const reactDashboardPageTemplateContent = reactDashboardPageTemplate()
+
     
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
 
@@ -192,7 +195,10 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(reactSrcDir, "main.jsx"), reactMainTemplateContent)
     fs.writeFileSync(path.join(reactSrcDir, "index.css"), indexCSSTemplateContent)
     fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplateContent)
+    fs.writeFileSync(path.join(authPageDir, 'Signup.jsx'), reactSignUpPageTemplateContent)
+    fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplateContent)
     
+
 
 
 }
