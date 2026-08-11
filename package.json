@@ -1,6 +1,6 @@
 {
   "name": "create-shipsprint",
-  "version": "1.1.2",
+  "version": "1.0.0",
   "description": "",
   "bin": {
     "create-shipsprint": "bin/cli.js"
