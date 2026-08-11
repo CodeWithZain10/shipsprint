@@ -8,9 +8,10 @@ ${includeValidation ? "import { registerSchema, loginSchema } from '../utils/val
 const router = express.Router();
 
 
-router.post('/register', ${includeValidation ? 'validateMiddleware(registerSchema),' : ''} registerUser);
-router.post('/login', ${includeValidation ? 'validateMiddleware(loginSchema),' : ''} loginUser);
-router.post('/logout', authMiddleware, logoutUser);
+router.post('/signup', ${includeValidation ? 'validateMiddleware(registerSchema),' : ''} registerUser);
+router.post('/signin', ${includeValidation ? 'validateMiddleware(loginSchema),' : ''} loginUser);
+router.post('/signout', authMiddleware, logoutUser);
+
 
 export default router;`
 }

@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+const reactDashboardPageTemplate =  () =>{
+    return `import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Dashboard() {
@@ -27,3 +28,7 @@ function Dashboard() {
 }
 
 export default Dashboard;
+`
+}
+
+export default reactDashboardPageTemplate

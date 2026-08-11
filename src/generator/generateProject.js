@@ -41,13 +41,23 @@ import userSeederTemplate from '../templates/backend/express-mongodb/utils/seede
 import reactAppTemplate from '../templates/frontend/react-vite/base/src/appTemplate.js'
 import reactMainTemplate from '../templates/frontend/react-vite/base/src/mainTemplate.js'
 import indexCSSTemplate from '../templates/frontend/react-vite/base/src/indexCSSTemplate.js'
+import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signinPageTemplate.js';
+import reactSignupPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signupPageTemplate.js';
+import reactDashboardPageTemplate from '../templates/frontend/react-vite/features/pages/dashboardPageTemplate.js';
+import reactHomePageTemplate from '../templates/frontend/react-vite/features/pages/homePageTemplate.js';
+import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
+import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
+import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
+
+
 
 import reactindexHTMLTemplate from '../templates/frontend/react-vite/base/indexHTMLTemplate.js'
 import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esLintConfigTemplate.js';
 import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgnoreTemplate.js';
 import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
 import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
-import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/singinPageTemplate.js';
+
+
 
 
 
@@ -101,7 +111,7 @@ const generateProject = (answers) => {
         fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils', 'validation'), { recursive: true })
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "validation", "env.validation.js"), envValidationContent)
         
-        fs.mkdirSync(path.join(baseDirBackendExpress, "src", "utils", "seeders", { recursive: true }))
+        fs.mkdirSync(path.join(baseDirBackendExpress, "src", "utils", "seeders"), { recursive: true })
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "seeders", "user.seeder.js"), userSeederContent)
     }
 
@@ -125,8 +135,8 @@ const generateProject = (answers) => {
     }
 
     // --- Core app files ---
-    const appCodeContent = appCodeTemplate(answers.includeAuthentication, answers.includeErrorHandler);
-    const serverCodeContent = serverCodeTemplate(answers.includeAuthentication);
+    const appCodeContent = appCodeTemplate(answers);
+    const serverCodeContent = serverCodeTemplate(answers);
     const dbConfigContent = dbConfigTemplate();
     
     fs.writeFileSync(path.join(baseDirBackendExpress, "src", "app.js"), appCodeContent)
@@ -137,7 +147,7 @@ const generateProject = (answers) => {
     const envContent = envTemplate(answers.includeAuthentication);
     fs.writeFileSync(path.join(baseDirBackendExpress, ".env"), envContent)
 
-    const packageJsonContent = packageJsonTemplate(answers.projectName, answers.includeAuthentication, answers.includeValidation);
+    const packageJsonContent = packageJsonTemplate(answers);
     fs.writeFileSync(path.join(baseDirBackendExpress, "package.json"), packageJsonContent)
 
 
@@ -155,6 +165,13 @@ const generateProject = (answers) => {
     const reactPackageJSONTemplateContent = reactPackageJSONTemplate()
     const reactViteConfigTemplateContent = reactViteConfigTemplate()
     const reactSignInPageTemplateContent = reactSignInPageTemplate()
+    const reactSignUpPageTemplateContent = reactSignupPageTemplate()
+    const reactDashboardPageTemplateContent = reactDashboardPageTemplate()
+    const reactHomePageTemplateContent = reactHomePageTemplate()
+    const reactAuthContextTemplateContent = reactAuthContextTemplate()
+    const reactProtectedRouteTemplateContent = reactProtectedRouteTemplate()
+    const reactAxiosApiTemplateContent = reactAxiosApiTemplate()
+
     
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
 
@@ -168,6 +185,7 @@ const generateProject = (answers) => {
     const reactServicesDir = mkdirSync(path.join(reactSrcDir, "services"), { recursive: true })
     const reactHooksDir = mkdirSync(path.join(reactSrcDir, "hooks"), { recursive: true })
     const reactUtilsDir = mkdirSync(path.join(reactSrcDir, "utils"), { recursive: true })
+    const reactContextDir = mkdirSync(path.join(reactSrcDir, "context"), { recursive: true })
     const pagesDir = mkdirSync(path.join(reactSrcDir, "pages"), { recursive: true })
     const authPageDir = mkdirSync(path.join(pagesDir, "auth"), { recursive: true })
 
@@ -182,11 +200,21 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(baseDirReact, "package.json"), reactPackageJSONTemplateContent)
     fs.writeFileSync(path.join(baseDirReact, "vite.config.js"), reactViteConfigTemplateContent)
 
-    fs.writeFileSync(path.join(reactSrcDir, "app.jsx"), reactAppTemplateContent)
+    fs.writeFileSync(path.join(reactSrcDir, "App.jsx"), reactAppTemplateContent)
     fs.writeFileSync(path.join(reactSrcDir, "main.jsx"), reactMainTemplateContent)
     fs.writeFileSync(path.join(reactSrcDir, "index.css"), indexCSSTemplateContent)
     fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplateContent)
+    fs.writeFileSync(path.join(authPageDir, 'Signup.jsx'), reactSignUpPageTemplateContent)
+    fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplateContent)
+    fs.writeFileSync(path.join(pagesDir, 'Home.jsx'), reactHomePageTemplateContent )
+
+    fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
+    fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplateContent)
+    fs.writeFileSync(path.join(reactServicesDir, "Api.jsx"), reactAxiosApiTemplateContent)
+
+
     
+
 
 
 }
