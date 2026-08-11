@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for contributing to this project. This repository is a CLI generator for creating a full-stack application with a backend and frontend scaffold. The project is designed to help teams bootstrap consistent application structure quickly while keeping the generated code easy to customize.
+Thank you for contributing to this project. This repository is a CLI generator for creating a full-stack application with a backend and frontend scaffold. The project is actively being developed by Zain Zahid and Fiza Noor, and it is designed to help teams bootstrap consistent application structure quickly while keeping the generated code easy to customize.
 
 ## Project Scope
 
