@@ -200,7 +200,7 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(baseDirReact, "package.json"), reactPackageJSONTemplateContent)
     fs.writeFileSync(path.join(baseDirReact, "vite.config.js"), reactViteConfigTemplateContent)
 
-    fs.writeFileSync(path.join(reactSrcDir, "app.jsx"), reactAppTemplateContent)
+    fs.writeFileSync(path.join(reactSrcDir, "App.jsx"), reactAppTemplateContent)
     fs.writeFileSync(path.join(reactSrcDir, "main.jsx"), reactMainTemplateContent)
     fs.writeFileSync(path.join(reactSrcDir, "index.css"), indexCSSTemplateContent)
     fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplateContent)
@@ -208,7 +208,7 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplateContent)
     fs.writeFileSync(path.join(pagesDir, 'Home.jsx'), reactHomePageTemplateContent )
 
-    fs.writeFileSync(path.join(reactSrcDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
+    fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
     fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplateContent)
     fs.writeFileSync(path.join(reactServicesDir, "Api.jsx"), reactAxiosApiTemplateContent)
 
