@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const Register = () => {
+const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { register, loading, error } = useAuth();
+  const { signup, loading, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await register(username, email, password);
+    const success = await signup(username, email, password);
     if (success) navigate('/dashboard');
   };
 
@@ -82,7 +82,7 @@ const Register = () => {
 
         <p className="text-sm text-center text-gray-500 mt-4">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 font-medium hover:underline">
+          <Link to="/signin" className="text-blue-600 font-medium hover:underline">
             Sign In
           </Link>
         </p>
@@ -91,4 +91,4 @@ const Register = () => {
   );
 }
 
-export default Register;
+export default Signup;

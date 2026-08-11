@@ -41,13 +41,19 @@ import userSeederTemplate from '../templates/backend/express-mongodb/utils/seede
 import reactAppTemplate from '../templates/frontend/react-vite/base/src/appTemplate.js'
 import reactMainTemplate from '../templates/frontend/react-vite/base/src/mainTemplate.js'
 import indexCSSTemplate from '../templates/frontend/react-vite/base/src/indexCSSTemplate.js'
+import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signinPageTemplate.js';
+import reactSignupPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signupPageTemplate.js';
+import reactDashboardPageTemplate from '../templates/frontend/react-vite/features/pages/dashboardPageTemplate.js';
+import reactHomePageTemplate from '../templates/frontend/react-vite/features/pages/homePageTemplate.js';
+
+
 
 import reactindexHTMLTemplate from '../templates/frontend/react-vite/base/indexHTMLTemplate.js'
 import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esLintConfigTemplate.js';
 import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgnoreTemplate.js';
 import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
 import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
-import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/singinPageTemplate.js';
+import reactSignInPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signinPageTemplate.js';
 
 
 
