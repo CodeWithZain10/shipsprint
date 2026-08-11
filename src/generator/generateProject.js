@@ -45,6 +45,9 @@ import reactSignInPageTemplate from '../templates/frontend/react-vite/features/p
 import reactSignupPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signupPageTemplate.js';
 import reactDashboardPageTemplate from '../templates/frontend/react-vite/features/pages/dashboardPageTemplate.js';
 import reactHomePageTemplate from '../templates/frontend/react-vite/features/pages/homePageTemplate.js';
+import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
+import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
+import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
 
 
 
@@ -53,6 +56,7 @@ import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esL
 import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgnoreTemplate.js';
 import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
 import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
+
 
 
 
@@ -163,6 +167,10 @@ const generateProject = (answers) => {
     const reactSignInPageTemplateContent = reactSignInPageTemplate()
     const reactSignUpPageTemplateContent = reactSignupPageTemplate()
     const reactDashboardPageTemplateContent = reactDashboardPageTemplate()
+    const reactHomePageTemplateContent = reactHomePageTemplate()
+    const reactAuthContextTemplateContent = reactAuthContextTemplate()
+    const reactProtectedRouteTemplateContent = reactProtectedRouteTemplate()
+    const reactAxiosApiTemplateContent = reactAxiosApiTemplate()
 
     
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
@@ -177,6 +185,7 @@ const generateProject = (answers) => {
     const reactServicesDir = mkdirSync(path.join(reactSrcDir, "services"), { recursive: true })
     const reactHooksDir = mkdirSync(path.join(reactSrcDir, "hooks"), { recursive: true })
     const reactUtilsDir = mkdirSync(path.join(reactSrcDir, "utils"), { recursive: true })
+    const reactContextDir = mkdirSync(path.join(reactSrcDir, "context"), { recursive: true })
     const pagesDir = mkdirSync(path.join(reactSrcDir, "pages"), { recursive: true })
     const authPageDir = mkdirSync(path.join(pagesDir, "auth"), { recursive: true })
 
@@ -197,6 +206,13 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplateContent)
     fs.writeFileSync(path.join(authPageDir, 'Signup.jsx'), reactSignUpPageTemplateContent)
     fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplateContent)
+    fs.writeFileSync(path.join(pagesDir, 'Home.jsx'), reactHomePageTemplateContent )
+
+    fs.writeFileSync(path.join(reactSrcDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
+    fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplateContent)
+    fs.writeFileSync(path.join(reactServicesDir, "Api.jsx"), reactAxiosApiTemplateContent)
+
+
     
 
 
