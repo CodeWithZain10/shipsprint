@@ -1,6 +1,6 @@
-const packageJsonTemplate = (projectName, includeAuthentication, includeValidation) => {
+const packageJsonTemplate = (answers) => {
     return `{
-  "name": "${projectName}",
+  "name": "${answers.projectName}",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
@@ -8,14 +8,14 @@ const packageJsonTemplate = (projectName, includeAuthentication, includeValidati
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "dependencies": {
-  ${includeValidation ? `
+  "dependencies": { 
+  ${answers.includeValidation ? `
     "joi": "latest",` : ""}
     "express": "latest",
     "mongoose": "latest",
     "dotenv": "latest",
     "nodemon": "latest",
-    "cors": "latest"${includeAuthentication ? `,
+    "cors": "latest"${answers.includeAuthentication ? `,
     "bcryptjs": "latest",
     "@faker-js/faker": "latest",
     "jsonwebtoken": "latest",

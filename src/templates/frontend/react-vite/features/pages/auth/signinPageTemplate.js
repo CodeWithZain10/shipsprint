@@ -1,4 +1,5 @@
-import { useState } from 'react';
+const reactSignInPageTemplate = () => {
+return `import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -76,4 +77,7 @@ const SignIn = () => {
   );
 }
 
-export default SignIn;
+export default SignIn;`
+}
+
+export default reactSignInPageTemplate

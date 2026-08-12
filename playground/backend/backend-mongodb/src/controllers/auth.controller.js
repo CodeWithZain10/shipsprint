@@ -2,7 +2,7 @@ import userModel from '../models/user.model.js'
 import jwt from 'jsonwebtoken'
 import { NotFoundError, UserAlreadyExistsError, UnauthorizedError, BadRequestError, ForbiddenError } from '../utils/errors/AppError.js'
 
-export const registerUser = async (req, res) => {
+export const signupUser = async (req, res) => {
 
     const {username, email, password} = req.body
 
@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
 
 }
 
-export const loginUser = async (req, res) => {
+export const signinUser = async (req, res) => {
 
     const {email, password} = req.body
 
@@ -76,7 +76,7 @@ export const loginUser = async (req, res) => {
 }
 
 
-export const logoutUser = async (req, res) => {
+export const signoutUser = async (req, res) => {
 
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1]
 

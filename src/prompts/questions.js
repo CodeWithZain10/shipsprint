@@ -12,21 +12,21 @@ const questions = [
     },
     {
         type: 'confirm',
-        name: "authentication",
+        name: "includeAuthentication",
         message: "Do you want to include authentication?",
         default: false,
         when: (answers) => answers.includeBackend   
     },
     {
       type: 'confirm',
-      name: 'validation',
+      name: 'includeValidation',
       message: 'Do you want to include validation?',
       default: false,
       when: (answers) => answers.includeBackend 
     },
     {
       type: 'confirm',
-      name: 'errorHandler',
+      name: 'includeErrorHandler',
       message: 'Do you want to include a custom error handler?',
       default: false,
       when: (answers) => answers.includeBackend  
