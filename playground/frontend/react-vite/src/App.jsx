@@ -3,13 +3,15 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Signin from './pages/auth/Signin';
+import Signup from './pages/auth/Signup';
 
 
-function App() {
+const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
       <Route
         path="/dashboard"
         element={

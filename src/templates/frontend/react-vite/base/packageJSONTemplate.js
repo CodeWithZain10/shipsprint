@@ -15,6 +15,7 @@ return `{
     "axios": "^1.19.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.18.2",
     "tailwindcss": "^4.3.3"
   },
