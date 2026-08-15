@@ -25,7 +25,7 @@ export const signinUser = async (req, res) => {
 
     const data = req.body
 
-    const { token, user } = await signinUserService(data)
+    const { user, token } = await signinUserService(data)
         
     res.cookie("token", token)
         

@@ -1,6 +1,6 @@
 import userModel from '../models/user.model.js'
-import jwt from 'jsonwebtoken'
-import { NotFoundError, UserAlreadyExistsError, UnauthorizedError, BadRequestError, ForbiddenError } from '../utils/errors/AppError.js'
+import {generateAccessToken} from './token.service.js'
+import { NotFoundError, UserAlreadyExistsError } from '../utils/errors/AppError.js'
 
 export const signupUser = async (data) => {
 
@@ -19,10 +19,10 @@ export const signupUser = async (data) => {
         })
     
     
+   const token = generateAccessToken(user._id)
+
     
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: '3d'})
-    
-        return {user, token}
+    return {user, token}
     
 }
 
@@ -42,7 +42,7 @@ export const signinUser = async (data) => {
             throw new UnauthorizedError('Invalid username or password')
         }
     
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: '3d'})
+        const token = generateAccessToken(user._id)
     
 
 
