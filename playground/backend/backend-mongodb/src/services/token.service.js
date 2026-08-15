@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import crypto from 'node:crypto'
 import refreshTokenModel from '../models/refreshToken.model.js'
+import { parseDuration } from '../utils/duration.js'
 
 export const generateAccessToken = (userId) => {
 
@@ -32,14 +33,22 @@ export const createRefreshTokenSession = async (userId) => {
 
     const hashedToken = hashRefreshToken(rawRefreshToken)
 
-    const calculateTokenExpiry = Date.now() + Number(process.env.REFRESH_TOKEN_EXPIRES_IN);
+
+
+    const duration = parseDuration(process.env.REFRESH_TOKEN_EXPIRES_IN)
+
+    const expiresAt = new Date(Date.now() + duration)
 
     await refreshTokenModel.create({
         user: userId,
         tokenHash: hashedToken,
-        expiresAt: calculateTokenExpiry
+        expiresAt: expiresAt
     })
 
     return { rawRefreshToken }
 
+}
+
+export const validateRefreshToken = (rawRefreshToken) => {
+    
 }

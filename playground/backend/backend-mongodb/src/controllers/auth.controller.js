@@ -1,12 +1,14 @@
+import { accessTokenCookieOptions, refreshTokenCookieOptions } from '../config/cookie.config.js'
 import { signupUser as signupUserService, signinUser as signinUserService} from '../services/auth.service.js'
 
 export const signupUser = async (req, res) => {
 
     const data = req.body
 
-    const { user, token } = await signupUserService(data)
+    const { user, accessToken, refreshToken } = await signupUserService(data)
 
-    res.cookie("token", token)
+    res.cookie("accessToken", accessToken, accessTokenCookieOptions )
+    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
         
         
     res.status(201).json({
@@ -16,7 +18,7 @@ export const signupUser = async (req, res) => {
                 user: user.username,
                 email: user.email
                 },
-                token: token
+                accessToken: accessToken
             })
 
 }
@@ -25,10 +27,11 @@ export const signinUser = async (req, res) => {
 
     const data = req.body
 
-    const { user, token } = await signinUserService(data)
+    const { user, accessToken, refreshToken } = await signinUserService(data)
         
-    res.cookie("token", token)
-        
+    res.cookie("accessToken", accessToken, accessTokenCookieOptions)
+    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
+
     res.status(200).json({
         message: "User logged in successfully",
             user: {
@@ -36,7 +39,7 @@ export const signinUser = async (req, res) => {
                 user: user.username,
                 email: user.email
                 },
-                token: token
+                accessToken: accessToken
                 })
 
    
