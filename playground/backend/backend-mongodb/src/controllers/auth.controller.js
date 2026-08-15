@@ -1,78 +1,45 @@
-import userModel from '../models/user.model.js'
-import jwt from 'jsonwebtoken'
-import { NotFoundError, UserAlreadyExistsError, UnauthorizedError, BadRequestError, ForbiddenError } from '../utils/errors/AppError.js'
+import { signupUser as signupUserService, signinUser as signinUserService} from '../services/auth.service.js'
 
 export const signupUser = async (req, res) => {
 
-    const {username, email, password} = req.body
+    const data = req.body
 
-
-    const isUserAlreadyExists = await userModel.findOne({email})
-
-    if(isUserAlreadyExists) {
-        throw new UserAlreadyExistsError('User already exists')
-    }
-
-    const user = await userModel.create({
-        username, 
-        email, 
-        password
-    })
-
-
-
-    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: '3d'})
+    const { user, token } = await signupUserService(data)
 
     res.cookie("token", token)
-
-
-     res.status(201).json({
+        
+        
+    res.status(201).json({
         message: "User created successfully",
-        user: {
-            _id: user._id,
-            user: user.username,
-            email: user.email,
-            password: user.password, 
-        },
-        token: token
-    })
-
-
+            user: {
+                _id: user._id,
+                user: user.username,
+                email: user.email
+                },
+                token: token
+            })
 
 }
 
 export const signinUser = async (req, res) => {
 
-    const {email, password} = req.body
+    const data = req.body
 
-
-    const user = await userModel.findOne({email}).select("+password")
-
-    if(!user) {
-        throw new NotFoundError('User not found')
-    }
-
-    const isPasswordCorrect = await user.comparePassword(password)
-
-    if(!isPasswordCorrect) {
-        throw new UnauthorizedError('Invalid username or password')
-    }
-
-    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: '3d'})
-
+    const { token, user } = await signinUserService(data)
+        
     res.cookie("token", token)
-
+        
     res.status(200).json({
         message: "User logged in successfully",
-        user: {
-            _id: user._id,
-            user: user.username,
-            email: user.email,
-            password: user.password, 
-            },
-            token: token
-        })
+            user: {
+                _id: user._id,
+                user: user.username,
+                email: user.email
+                },
+                token: token
+                })
 
+   
 }
 
 
@@ -87,5 +54,5 @@ export const signoutUser = async (req, res) => {
     res.clearCookie("token")
 
     res.status(200).json({message: "User logged out successfully"})
-
+  
 }
