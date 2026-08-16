@@ -4,16 +4,16 @@ import { UnauthorizedError } from '../utils/errors/AppError.js'
 
 const authMiddleware = async (req, res, next) => {
 
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1]
+    const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1]
 
-    if(!token) {
+    if(!accessToken) {
         throw new UnauthorizedError('No token provided')
     }
 
     try {
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const user = await userModel.findById(decoded.id)
+        const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
+        const user = await userModel.findById(decoded.id).select("-password")
 
         if(!user) {
             throw new UnauthorizedError('Invalid token')

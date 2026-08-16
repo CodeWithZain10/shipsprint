@@ -7,7 +7,7 @@ export const generateAccessToken = (userId) => {
 
     const token = jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN})
 
-    return { token }
+    return token;
 
 }
 
@@ -45,10 +45,62 @@ export const createRefreshTokenSession = async (userId) => {
         expiresAt: expiresAt
     })
 
-    return { rawRefreshToken }
+    return rawRefreshToken; 
 
 }
 
-export const validateRefreshToken = (rawRefreshToken) => {
+export const validateRefreshToken = async (rawRefreshToken) => {
+    const hashedRefreshToken = hashRefreshToken(rawRefreshToken)
+
+    const session = await refreshTokenModel.findOne({
+                tokenHash: hashedRefreshToken
+            })
+    
+    if(session === null) throw new Error("Unauthorized")
+
+    if(session.revokedAt !== null) { 
+        throw new Error("token is revoked")
+    }
+
+    if(session.expiresAt <= new Date()) {
+        throw new Error("token is expired") 
+    }
+
+
+    return session;
+  
+}
+
+export const refreshAccessToken = async (rawRefreshToken) => {
+
+    const session = await validateRefreshToken(rawRefreshToken)
+    session.revokedAt = new Date()
+    await session.save()
+
+    const refreshToken = await createRefreshTokenSession(session.user)
+    const accessToken = generateAccessToken(session.user)
+
+    return { refreshToken, accessToken }
+
+
+}
+
+
+export const revokeRefreshToken = async (rawRefreshToken) => {
+    const handleRefreshToken = hashRefreshToken(rawRefreshToken)
+
+    const session = await refreshTokenModel.findOne({ tokenHash: handleRefreshToken })
+
+    if(!session) return;
+
+    if(session.revokedAt !== null) return
+
+    session.revokedAt = new Date()
+
+    await session.save()
+
+}
+
+export const verifyAccessToken = () => {
     
 }

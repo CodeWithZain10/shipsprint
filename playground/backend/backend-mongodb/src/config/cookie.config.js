@@ -13,5 +13,5 @@ export const refreshTokenCookieOptions = {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: parseDuration(process.env.REFRESH_TOKEN_EXPIRES_IN),
-    path: '/auth/refresh'
+    path: '/api/auth'
 }

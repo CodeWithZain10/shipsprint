@@ -1,5 +1,5 @@
 import userModel from '../models/user.model.js'
-import {generateAccessToken, createRefreshTokenSession} from './token.service.js'
+import {generateAccessToken, createRefreshTokenSession, validateRefreshToken, revokeRefreshToken} from './token.service.js'
 import { NotFoundError, UserAlreadyExistsError } from '../utils/errors/AppError.js'
 
 export const signupUser = async (data) => {
@@ -20,7 +20,7 @@ export const signupUser = async (data) => {
     
     
    const accessToken = generateAccessToken(user._id)
-   const { rawRefreshToken } = await createRefreshTokenSession(user._id)
+   const rawRefreshToken  = await createRefreshTokenSession(user._id)
 
     
     return {user, accessToken, refreshToken: rawRefreshToken}
@@ -44,7 +44,7 @@ export const signinUser = async (data) => {
         }
     
         const accessToken = generateAccessToken(user._id)
-        const { rawRefreshToken } = await createRefreshTokenSession(user._id)
+        const rawRefreshToken  = await createRefreshTokenSession(user._id)
     
 
 
@@ -52,7 +52,8 @@ export const signinUser = async (data) => {
     
 }
 
-export const signOutUser = () => {
+export const signOutUser = async (refreshToken) => {
 
+    await revokeRefreshToken(refreshToken)
 
 }
