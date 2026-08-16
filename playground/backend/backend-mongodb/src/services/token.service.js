@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken'
 import crypto from 'node:crypto'
 import refreshTokenModel from '../models/refreshToken.model.js'
 import { parseDuration } from '../utils/duration.js'
+import { UnauthorizedError, TokenNotActiveError, TokenExpiredError, InvalidTokenError } from '../utils/errors/AppError.js'
+import userModel from '../models/user.model.js'
 
 export const generateAccessToken = (userId) => {
 
@@ -101,6 +103,25 @@ export const revokeRefreshToken = async (rawRefreshToken) => {
 
 }
 
-export const verifyAccessToken = () => {
+export const verifyAccessToken = async (accessToken) => {
+
+    if(!accessToken) {
+            throw new UnauthorizedError('No token provided')
+        }
     
+    try {
+    
+        const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
+        const user = await userModel.findById(decoded.id).select("-password")
+    
+        if(!user) {
+                throw new UnauthorizedError('Invalid token')
+            }
+        
+        return user;
+
+    } catch (error) {
+        console.log(error.name)
+    }
+
 }

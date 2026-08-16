@@ -80,3 +80,9 @@ export const refreshAccessTokenController = async (req, res) => {
     return res.status(200).json({ success: true })
     
 }
+
+export const profile = (req, res) => {
+    console.log(req.user)
+
+    res.json({message: "working"})
+}
