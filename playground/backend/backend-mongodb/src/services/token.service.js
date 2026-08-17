@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import crypto from 'node:crypto'
 import refreshTokenModel from '../models/refreshToken.model.js'
 import { parseDuration } from '../utils/duration.js'
-import { UnauthorizedError, TokenNotActiveError, TokenExpiredError, InvalidTokenError } from '../utils/errors/AppError.js'
+import { UnauthorizedError, TokenNotActiveError, TokenExpiredError, InvalidTokenError, AppError } from '../utils/errors/AppError.js'
 import userModel from '../models/user.model.js'
 
 export const generateAccessToken = (userId) => {
@@ -58,14 +58,15 @@ export const validateRefreshToken = async (rawRefreshToken) => {
                 tokenHash: hashedRefreshToken
             })
     
-    if(session === null) throw new Error("Unauthorized")
+    if(session === null) throw new UnauthorizedError("Unauthorized")
 
     if(session.revokedAt !== null) { 
-        throw new Error("token is revoked")
+        await revokeAllUserRefreshSessions(session.user)
+        throw new UnauthorizedError("token is revoked")
     }
 
     if(session.expiresAt <= new Date()) {
-        throw new Error("token is expired") 
+        throw new TokenExpiredError() 
     }
 
 
@@ -115,13 +116,26 @@ export const verifyAccessToken = async (accessToken) => {
         const user = await userModel.findById(decoded.id).select("-password")
     
         if(!user) {
-                throw new UnauthorizedError('Invalid token')
+                throw new UnauthorizedError('user not exists')
             }
         
         return user;
 
     } catch (error) {
-        console.log(error.name)
+        const err = error.name
+        
+        if(err === "TokenExpiredError") throw new TokenExpiredError()
+        if(err === "JsonWebTokenError") throw new InvalidTokenError()
+        if(err === "NotBeforeError") throw new TokenNotActiveError()
+        if(error instanceof AppError) throw error
+
+        throw new UnauthorizedError("Something is wrong")
     }
+
+}
+
+export const revokeAllUserRefreshSessions = async (userId) => {
+
+    const session = await refreshTokenModel.updateMany({ user: userId, revokedAt: null }, {$set: { revokedAt: new Date() }})
 
 }
