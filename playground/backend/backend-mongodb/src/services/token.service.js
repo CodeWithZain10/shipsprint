@@ -77,8 +77,9 @@ export const validateRefreshToken = async (rawRefreshToken) => {
 export const refreshAccessToken = async (rawRefreshToken) => {
 
     const session = await validateRefreshToken(rawRefreshToken)
-    session.revokedAt = new Date()
-    await session.save()
+    const revokedSession = await revokeRefreshTokenAtomically(rawRefreshToken)
+
+    if(!revokedSession) throw new UnauthorizedError("Refresh token already used")
 
     const refreshToken = await createRefreshTokenSession(session.user)
     const accessToken = generateAccessToken(session.user)
@@ -136,6 +137,16 @@ export const verifyAccessToken = async (accessToken) => {
 
 export const revokeAllUserRefreshSessions = async (userId) => {
 
-    const session = await refreshTokenModel.updateMany({ user: userId, revokedAt: null }, {$set: { revokedAt: new Date() }})
+    await refreshTokenModel.updateMany({ user: userId, revokedAt: null }, {$set: { revokedAt: new Date() }})
+
+}
+
+export const revokeRefreshTokenAtomically = async (refreshToken) => {
+
+    const hashedToken = hashRefreshToken(refreshToken)
+
+    const session = await refreshTokenModel.findOneAndUpdate({tokenHash: hashedToken, revokedAt: null}, {$set:{ revokedAt: new Date() }}, { new: true })
+
+    return session
 
 }
