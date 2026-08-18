@@ -4,6 +4,7 @@ import refreshTokenModel from '../models/refreshToken.model.js'
 import { parseDuration } from '../utils/duration.js'
 import { UnauthorizedError, TokenNotActiveError, TokenExpiredError, InvalidTokenError, AppError } from '../utils/errors/AppError.js'
 import userModel from '../models/user.model.js'
+import { after } from 'node:test'
 
 export const generateAccessToken = (userId) => {
 
@@ -145,7 +146,7 @@ export const revokeRefreshTokenAtomically = async (refreshToken) => {
 
     const hashedToken = hashRefreshToken(refreshToken)
 
-    const session = await refreshTokenModel.findOneAndUpdate({tokenHash: hashedToken, revokedAt: null}, {$set:{ revokedAt: new Date() }}, { new: true })
+    const session = await refreshTokenModel.findOneAndUpdate({tokenHash: hashedToken, revokedAt: null}, {$set:{ revokedAt: new Date() }}, { returnDocument: after })
 
     return session
 
