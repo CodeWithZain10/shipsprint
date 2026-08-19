@@ -1,6 +1,6 @@
 import userModel from '../models/user.model.js'
 import {generateAccessToken, createRefreshTokenSession, validateRefreshToken, revokeRefreshToken} from './token.service.js'
-import { NotFoundError, UserAlreadyExistsError } from '../utils/errors/AppError.js'
+import { NotFoundError, UnauthorizedError, UserAlreadyExistsError } from '../utils/errors/AppError.js'
 
 export const signupUser = async (data) => {
 

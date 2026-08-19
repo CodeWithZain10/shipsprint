@@ -1,6 +1,24 @@
 export const errorHandler = (err, req, res, next) => {
-    res.status(err.statusCode || 500).json({
+    const isOperational = err.isOperational === true;
+
+    if (isOperational) {
+        return res.status(err.statusCode).json({
+            success: false,
+            message: err.message
+        });
+    }
+
+    if(err.name === "PayloadTooLargeError"){
+        return res.status(413).json({
+            success: false,
+            message: "Payload Too Large"
+        })
+    }
+
+    console.error('UNEXPECTED ERROR:', err);
+
+    return res.status(500).json({
         success: false,
-        message: err.message || 'Internal Server Error'
-    })
-}
+        message: 'Internal Server Error'
+    });
+};
