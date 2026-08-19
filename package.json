@@ -6,7 +6,8 @@
     "create-shipsprint": "bin/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "nodemon playground/backend/backend-mongodb/server.js",
     "seed": "node playground/backend/backend-mongodb/src/utils/seeders/user.seeder.js"
   },
