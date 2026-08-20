@@ -6,26 +6,64 @@ import crypto from 'node:crypto'
 
 const api = supertest(app)
 
-test('refreshes access token successfully', async () => {
+const signupAndSignin = async (username, email) => {
 
     await api.post('/api/auth/signup').send({
-        username: "shipsprint.refresh",
-        email: "shipsprint.refresh@gmail.com",
-        password: "shipsprint123"
+        username,
+        email,
+        password: 'shipsprint123'
     })
 
     const signinResponse = await api.post('/api/auth/signin').send({
-        email: "shipsprint.refresh@gmail.com",
-        password: "shipsprint123"
+        email,
+        password: 'shipsprint123'
     })
 
-    const refreshCookie = signinResponse.headers['set-cookie']
+    expect(signinResponse.status).toBe(200)
 
-    expect(refreshCookie).toBeDefined()
+    return signinResponse.headers['set-cookie']
+}
+
+
+const getCsrfToken = async () => {
+
+    const response = await api
+        .get('/api/auth/csrf')
+
+    expect(response.status).toBe(200)
+
+    const csrfCookie = response.headers['set-cookie']
+        ?.find(cookie => cookie.startsWith('csrfToken='))
+
+    expect(csrfCookie).toBeDefined()
+
+    const csrfToken = csrfCookie
+        .split(';')[0]
+        .split('=')[1]
+
+    return {
+        csrfCookie,
+        csrfToken
+    }
+}
+
+
+test('refreshes access token successfully', async () => {
+
+    const refreshCookie = await signupAndSignin(
+        'shipsprint.refresh',
+        'shipsprint.refresh@gmail.com'
+    )
+
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
 
     const response = await api
         .post('/api/auth/refresh')
-        .set('Cookie', refreshCookie)
+        .set('Cookie', [...refreshCookie, csrfCookie])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(response.status).toBe(200)
     expect(response.body.success).toBe(true)
@@ -39,9 +77,15 @@ test('refreshes access token successfully', async () => {
 
 test('rejects refresh when refresh token is missing', async () => {
 
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
+
     const response = await api
         .post('/api/auth/refresh')
-        .set('Cookie', '')
+        .set('Cookie', csrfCookie)
+        .set('X-CSRF-Token', csrfToken)
 
     expect(response.status).toBe(401)
     expect(response.body.success).toBe(false)
@@ -51,9 +95,18 @@ test('rejects refresh when refresh token is missing', async () => {
 
 test('rejects refresh when refresh token is invalid', async () => {
 
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
+
     const response = await api
         .post('/api/auth/refresh')
-        .set('Cookie', 'refreshToken=invalid-refresh-token')
+        .set('Cookie', [
+            'refreshToken=invalid-refresh-token',
+            csrfCookie
+        ])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(response.status).toBe(401)
     expect(response.body.success).toBe(false)
@@ -63,20 +116,10 @@ test('rejects refresh when refresh token is invalid', async () => {
 
 test('rejects refresh when refresh token is expired', async () => {
 
-    await api.post('/api/auth/signup').send({
-        username: "shipsprint.expired",
-        email: "shipsprint.expired@gmail.com",
-        password: "shipsprint123"
-    })
-
-    const signinResponse = await api.post('/api/auth/signin').send({
-        email: "shipsprint.expired@gmail.com",
-        password: "shipsprint123"
-    })
-
-    const refreshCookie = signinResponse.headers['set-cookie']
-
-    expect(refreshCookie).toBeDefined()
+    const refreshCookie = await signupAndSignin(
+        'shipsprint.expired',
+        'shipsprint.expired@gmail.com'
+    )
 
     const refreshTokenCookie = refreshCookie
         .find(cookie => cookie.startsWith('refreshToken='))
@@ -102,9 +145,15 @@ test('rejects refresh when refresh token is expired', async () => {
 
     await refreshTokenRecord.save()
 
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
+
     const response = await api
         .post('/api/auth/refresh')
-        .set('Cookie', refreshCookie)
+        .set('Cookie', [...refreshCookie, csrfCookie])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(response.status).toBe(401)
     expect(response.body.success).toBe(false)
@@ -114,20 +163,10 @@ test('rejects refresh when refresh token is expired', async () => {
 
 test('rejects refresh when refresh token is revoked', async () => {
 
-    await api.post('/api/auth/signup').send({
-        username: "shipsprint.revoked",
-        email: "shipsprint.revoked@gmail.com",
-        password: "shipsprint123"
-    })
-
-    const signinResponse = await api.post('/api/auth/signin').send({
-        email: "shipsprint.revoked@gmail.com",
-        password: "shipsprint123"
-    })
-
-    const refreshCookie = signinResponse.headers['set-cookie']
-
-    expect(refreshCookie).toBeDefined()
+    const refreshCookie = await signupAndSignin(
+        'shipsprint.revoked',
+        'shipsprint.revoked@gmail.com'
+    )
 
     const refreshTokenCookie = refreshCookie
         .find(cookie => cookie.startsWith('refreshToken='))
@@ -153,9 +192,15 @@ test('rejects refresh when refresh token is revoked', async () => {
 
     await refreshTokenRecord.save()
 
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
+
     const response = await api
         .post('/api/auth/refresh')
-        .set('Cookie', refreshCookie)
+        .set('Cookie', [...refreshCookie, csrfCookie])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(response.status).toBe(401)
     expect(response.body.success).toBe(false)
@@ -165,31 +210,28 @@ test('rejects refresh when refresh token is revoked', async () => {
 
 test('rejects refresh when old refresh token is reused', async () => {
 
-    await api.post('/api/auth/signup').send({
-        username: "shipsprint.reuse",
-        email: "shipsprint.reuse@gmail.com",
-        password: "shipsprint123"
-    })
+    const originalRefreshCookie = await signupAndSignin(
+        'shipsprint.reuse',
+        'shipsprint.reuse@gmail.com'
+    )
 
-    const signinResponse = await api.post('/api/auth/signin').send({
-        email: "shipsprint.reuse@gmail.com",
-        password: "shipsprint123"
-    })
-
-    const originalRefreshCookie = signinResponse.headers['set-cookie']
-
-    expect(originalRefreshCookie).toBeDefined()
+    const {
+        csrfCookie,
+        csrfToken
+    } = await getCsrfToken()
 
     const firstRefreshResponse = await api
         .post('/api/auth/refresh')
-        .set('Cookie', originalRefreshCookie)
+        .set('Cookie', [...originalRefreshCookie, csrfCookie])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(firstRefreshResponse.status).toBe(200)
     expect(firstRefreshResponse.body.success).toBe(true)
 
     const secondRefreshResponse = await api
         .post('/api/auth/refresh')
-        .set('Cookie', originalRefreshCookie)
+        .set('Cookie', [...originalRefreshCookie, csrfCookie])
+        .set('X-CSRF-Token', csrfToken)
 
     expect(secondRefreshResponse.status).toBe(401)
     expect(secondRefreshResponse.body.success).toBe(false)

@@ -88,6 +88,8 @@ export const profile = (req, res) => {
     res.json({message: "working"})
 }
 
+
+
 export const getCsrfToken = (req, res) => {
     const csrfToken = generateCsrfToken()
 
@@ -98,7 +100,7 @@ export const getCsrfToken = (req, res) => {
         path: '/'
     })
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: 'CSRF token generated successfully'
     })
