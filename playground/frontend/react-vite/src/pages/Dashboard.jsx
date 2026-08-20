@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Dashboard() {
-  const { signout } = useAuth();
+  const { signout, user } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignout = () => {
-    signout();
+  const handleSignout = async () => {
+    await signout();
     navigate('/signin');
   };
 
@@ -21,7 +21,7 @@ function Dashboard() {
           Logout
         </button>
       </div>
-      <p className="text-gray-600">Welcome! You are logged in.</p>
+      <p className="text-gray-600">Welcome{user?.username ? `, ${user.username}` : ''}!</p>
     </div>
   );
 }

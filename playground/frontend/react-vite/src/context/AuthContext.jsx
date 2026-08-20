@@ -1,70 +1,92 @@
-import {createContext, useContext, useState} from 'react'
-import api from "../services/api"
-import { toast} from "react-hot-toast"
+import { createContext, useContext, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import api from '../services/api';
+import { initCsrf } from '../services/csrf';
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
-const AuthContext = createContext()
- 
-export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
-
-    const signin = async (email, password) => {
-        setLoading(true)
-        setError(null)
-        try {
-            const response = await api.post("/auth/signin", {email, password})
-            localStorage.setItem("token", response.data.token)
-            setUser(response.data.user)
-            toast.success("Signin Successfully!")
-            return true
-        } catch (error) {
-            const message = error?.response?.data?.message || "Signin failed"
-            setError(message)
-            toast.error(message)
-            return false
-        }
-        finally{
-            setLoading(false)
-        }
+  const checkAuth = async () => {
+    try {
+      const res = await api.get('/auth/profile');
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setAuthLoading(false);
     }
-    const signup = async (username, email, password) => {
-       setLoading(true)
-       setError(null)
-
-       try {
-        const response = await api.post("/auth/signup", {username, email, password})
-        console.log(response)
-        localStorage.setItem("token", response.data.token)
-        setUser(response.data.user)
-        toast.success("Signup Successfully!")
-        return true
-
-       } catch (error) {
-        const message = error?.response?.data?.message || "Signup failed"
-        toast.error(message)
-        setError(message)
-            return false
-       }
-       finally{
-        setLoading(false)
-       }
-    }
-    const signout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    toast.success("Signout Successfully!")
   };
 
-    return(
-        <AuthContext.Provider value={{signin, signup, signout, user, loading, error}}>
-            {children}
-        </AuthContext.Provider>
-    )
+  useEffect(() => {
+    
+    const init = async () => {
+      await initCsrf();
+      await checkAuth();
+    };
+    init();
+  }, []);
+
+  const signin = async (email, password) => {
+    setError(null);
+    try {
+      const res = await api.post('/auth/signin', { email, password });
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+      toast.success('Signed in successfully!');
+      return true;
+    } catch (err) {
+      const message = err.response?.data?.message || 'Signin failed';
+      setError(message);
+      toast.error(message);
+      return false;
+    }
+  };
+
+  const signup = async (username, email, password) => {
+    setError(null);
+    try {
+      const res = await api.post('/auth/signup', { username, email, password });
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+      toast.success('Account created successfully!');
+      return true;
+    } catch (err) {
+      const message = err.response?.data?.message || 'Signup failed';
+      setError(message);
+      toast.error(message);
+      return false;
+    }
+  };
+
+  const signout = async () => {
+    try {
+      await api.post('/auth/signout');
+    } catch (err) {
+      console.error('Signout request failed', err);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      toast.success('Signed out successfully!');
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, authLoading, error, signin, signup, signout, checkAuth }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export const useAuth = ()=>{
-    return useContext(AuthContext)
+export function useAuth() {
+  return useContext(AuthContext);
 }
-
