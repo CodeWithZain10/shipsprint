@@ -7,7 +7,6 @@ import { signinRateLimit, signupRateLimit, refreshTokenRateLimit } from "../midd
 import csrfMiddleware from "../middlewares/csrf.middleware.js";
 
 
-
 const router = express.Router();
 
 router.post('/signup', signupRateLimit, validateMiddleware(registerSchema), signupUser);
