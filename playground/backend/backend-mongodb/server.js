@@ -1,11 +1,10 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv/config'
 import  validateEnv  from './src/utils/validation/env.validation.js'
 import app from './src/app.js' 
 import connectDB from './src/config/db.js'
 
-dotenv.config()
 
-validateEnv(['MONGO_URI', 'JWT_SECRET'])
+validateEnv(['MONGO_URI', 'ACCESS_TOKEN_EXPIRES_IN', 'ACCESS_TOKEN_SECRET', 'REFRESH_TOKEN_EXPIRES_IN'])
 
 
 connectDB()

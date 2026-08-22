@@ -1,12 +1,13 @@
 {
   "name": "create-shipsprint",
   "version": "1.0.0",
-  "description": "",
+  "description": "A modern full-stack project scaffolding CLI",
   "bin": {
     "create-shipsprint": "bin/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "nodemon playground/backend/backend-mongodb/server.js",
     "seed": "node playground/backend/backend-mongodb/src/utils/seeders/user.seeder.js"
   },
@@ -25,9 +26,13 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
     "joi": "^18.2.3",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.8.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.11"
   }
 }

@@ -8,7 +8,7 @@ const prompt = createPromptModule();
 
 program
     .name("create-shipsprint")
-    .description("CLI to scaffold a backend project")
+    .description("A modern full-stack project scaffolding CLI")
     .action(init);
 
 program.parse();
