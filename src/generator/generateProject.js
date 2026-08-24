@@ -48,7 +48,7 @@ import reactHomePageTemplate from '../templates/frontend/react-vite/features/pag
 import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
 import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
 import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
-
+import reactCsrfApiTemplate from '../templates/frontend/react-vite/features/services/csrfApiTemplate.js';
 
 
 import reactindexHTMLTemplate from '../templates/frontend/react-vite/base/indexHTMLTemplate.js'
@@ -171,6 +171,7 @@ const generateProject = (answers) => {
     const reactAuthContextTemplateContent = reactAuthContextTemplate()
     const reactProtectedRouteTemplateContent = reactProtectedRouteTemplate()
     const reactAxiosApiTemplateContent = reactAxiosApiTemplate()
+    const reactCsrfApiTemplateContent = reactCsrfApiTemplate()
 
     
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
@@ -211,6 +212,7 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
     fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplateContent)
     fs.writeFileSync(path.join(reactServicesDir, "Api.jsx"), reactAxiosApiTemplateContent)
+    fs.writeFileSync(path.join(reactServicesDir, "csrf.jsx"), reactCsrfApiTemplateContent)
 
 
     
