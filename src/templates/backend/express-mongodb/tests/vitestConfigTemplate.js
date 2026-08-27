@@ -1,4 +1,5 @@
-import { defineConfig } from 'vitest/config'
+const vitestConfigTemplate = () => {
+    return `import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
     test: {
@@ -6,4 +7,7 @@ export default defineConfig({
         setupFiles: ['./tests/setup.js'],
         fileParallelism: false
     }
-})
+})`
+}
+
+export default vitestConfigTemplate;
