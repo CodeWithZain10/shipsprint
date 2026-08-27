@@ -3,15 +3,18 @@ return `import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const SignIn = () => {
+function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signin, loading, error } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const { signin, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     const success = await signin(email, password);
+    setSubmitting(false);
     if (success) navigate('/dashboard');
   };
 
@@ -30,9 +33,7 @@ const SignIn = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={email}
@@ -44,9 +45,7 @@ const SignIn = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -59,10 +58,10 @@ const SignIn = () => {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={submitting}
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {submitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
@@ -77,7 +76,7 @@ const SignIn = () => {
   );
 }
 
-export default SignIn;`
+export default Signin;`
 }
 
 export default reactSignInPageTemplate

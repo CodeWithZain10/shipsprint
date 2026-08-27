@@ -1,4 +1,5 @@
-import jwt from 'jsonwebtoken'
+const tokenServiceTemplate = () => {
+    return `import jwt from 'jsonwebtoken'
 import crypto from 'node:crypto'
 import refreshTokenModel from '../models/refreshToken.model.js'
 import { parseDuration } from '../utils/duration.js'
@@ -19,7 +20,6 @@ export const generateRefreshToken = () => {
 
     return refreshToken
 
-
 }
 
 export const hashRefreshToken = (refreshToken) => {
@@ -34,8 +34,6 @@ export const createRefreshTokenSession = async (userId) => {
     const rawRefreshToken = generateRefreshToken()
 
     const hashedToken = hashRefreshToken(rawRefreshToken)
-
-
 
     const duration = parseDuration(process.env.REFRESH_TOKEN_EXPIRES_IN)
 
@@ -69,7 +67,6 @@ export const validateRefreshToken = async (rawRefreshToken) => {
         throw new TokenExpiredError() 
     }
 
-
     return session;
   
 }
@@ -86,9 +83,7 @@ export const refreshAccessToken = async (rawRefreshToken) => {
 
     return { refreshToken, accessToken }
 
-
 }
-
 
 export const revokeRefreshToken = async (rawRefreshToken) => {
     const handleRefreshToken = hashRefreshToken(rawRefreshToken)
@@ -143,4 +138,7 @@ export const revokeRefreshTokenAtomically = async (refreshToken) => {
 
     return session
 
+}`
 }
+
+export default tokenServiceTemplate;

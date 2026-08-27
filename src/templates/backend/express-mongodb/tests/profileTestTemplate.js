@@ -1,17 +1,16 @@
-import app from '../../src/app.js'
+const profileTestTemplate = () => {
+    return `import app from '../../src/app.js'
 import supertest from 'supertest'
 import { test, expect } from 'vitest'
 
 const api = supertest(app)
 
 test('returns profile when authenticated with valid token', async () => {
-    const signupRes = await api
-        .post('/api/auth/signup')
-        .send({
-            username: 'shipsprint.profiletest',
-            email: 'shipsprint.profiletest@gmail.com',
-            password: 'shipsprint123'
-        })
+    const signupRes = await api.post('/api/auth/signup').send({
+        username: 'shipsprint.profiletest',
+        email: 'shipsprint.profiletest@gmail.com',
+        password: 'shipsprint123'
+    })
 
     const cookies = signupRes.headers['set-cookie']
     const accessTokenCookie = cookies?.find(c => c.startsWith('accessToken='))
@@ -32,4 +31,7 @@ test('rejects profile request when token is missing', async () => {
     expect(response.status).toBe(401)
     expect(response.body.success).toBe(false)
     expect(response.body.message).toBe('No token provided')
-})
+})`
+}
+
+export default profileTestTemplate;

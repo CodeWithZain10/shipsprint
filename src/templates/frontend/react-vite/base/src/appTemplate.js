@@ -1,13 +1,12 @@
 const reactAppTemplate = () => {
 return `import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
-import Signin from './pages/auth/Signin';
-import Signup from './pages/auth/Signup';
 
-
-const App = () => {
+function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />

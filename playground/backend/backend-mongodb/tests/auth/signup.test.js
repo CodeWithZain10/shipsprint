@@ -356,5 +356,5 @@ test('trims leading and trailing spaces from username', async () => {
         .toBe('User created successfully')
 
     expect(response.body.user.user)
-        .toBe(' shipsprint.trim ')
+        .toBe('shipsprint.trim')
 })

@@ -1,26 +1,13 @@
 /*
- * src/templates/fileHelper.js
+ * src/generator/generateProject.js
  *
- * Utility that scaffolds a project directory structure by writing
- * files produced by template functions. This module is intentionally
- * synchronous and minimal: it creates directories and writes files
- * using the templates available under ./backend and ./frontend.
- *
- * Contributors:
- * - When adding templates: export a function that returns the file content string.
- * - Keep the naming conventions aligned with the existing templates.
- *
- * Notes / gotchas:
- * - All file writes are synchronous (blocking). That's fine for a CLI
- *   generator but avoid using this module in long-running servers.
- * - `fs.writeFileSync` expects a full file path as the first argument.
- *   There are a few places below where directory variables are passed
- *   to `writeFileSync` — double-check those if you change the React part.
+ * Scaffolds project directory structure and writes template files for backend and frontend.
  */
 
 import fs, { mkdirSync } from 'fs';
 import path from 'path';
-// Backend template providers (each returns file content when invoked)
+
+// Backend template providers
 import getAuthMiddlewareContent from '../templates/backend/express-mongodb/auth/authMiddlewareTemplate.js';
 import userModelTemplate from '../templates/backend/express-mongodb/auth/userModelTemplate.js';
 import authRoutesTemplate from '../templates/backend/express-mongodb/auth/authRoutesTemplate.js';
@@ -37,6 +24,28 @@ import appErrorTemplate from '../templates/backend/express-mongodb/utils/errors/
 import envValidationTemplate from '../templates/backend/express-mongodb/validation/envValidationTemplate.js';
 import userSeederTemplate from '../templates/backend/express-mongodb/utils/seeders/userSeederTemplate.js';
 
+import cookieConfigTemplate from '../templates/backend/express-mongodb/config/cookieConfigTemplate.js';
+import csrfMiddlewareTemplate from '../templates/backend/express-mongodb/middlewares/csrfMiddlewareTemplate.js';
+import rateLimitMiddlewareTemplate from '../templates/backend/express-mongodb/middlewares/rateLimitMiddlewareTemplate.js';
+import refreshTokenModelTemplate from '../templates/backend/express-mongodb/auth/refreshTokenModelTemplate.js';
+import authServiceTemplate from '../templates/backend/express-mongodb/services/authServiceTemplate.js';
+import tokenServiceTemplate from '../templates/backend/express-mongodb/services/tokenServiceTemplate.js';
+import csrfTemplate from '../templates/backend/express-mongodb/utils/csrfTemplate.js';
+import durationTemplate from '../templates/backend/express-mongodb/utils/durationTemplate.js';
+
+// Test templates
+import vitestConfigTemplate from '../templates/backend/express-mongodb/tests/vitestConfigTemplate.js';
+import setupTemplate from '../templates/backend/express-mongodb/tests/setupTemplate.js';
+import envTestTemplate from '../templates/backend/express-mongodb/tests/envTestTemplate.js';
+import signupTestTemplate from '../templates/backend/express-mongodb/tests/signupTestTemplate.js';
+import signinTestTemplate from '../templates/backend/express-mongodb/tests/signinTestTemplate.js';
+import signoutTestTemplate from '../templates/backend/express-mongodb/tests/signoutTestTemplate.js';
+import refreshTestTemplate from '../templates/backend/express-mongodb/tests/refreshTestTemplate.js';
+import accessTokenTestTemplate from '../templates/backend/express-mongodb/tests/accessTokenTestTemplate.js';
+import csrfTestTemplate from '../templates/backend/express-mongodb/tests/csrfTestTemplate.js';
+import rateLimitTestTemplate from '../templates/backend/express-mongodb/tests/rateLimitTestTemplate.js';
+import profileTestTemplate from '../templates/backend/express-mongodb/tests/profileTestTemplate.js';
+
 // Frontend React templates
 import reactAppTemplate from '../templates/frontend/react-vite/base/src/appTemplate.js'
 import reactMainTemplate from '../templates/frontend/react-vite/base/src/mainTemplate.js'
@@ -48,8 +57,7 @@ import reactHomePageTemplate from '../templates/frontend/react-vite/features/pag
 import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
 import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
 import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
-
-
+import reactCsrfApiTemplate from '../templates/frontend/react-vite/features/services/csrfApiTemplate.js';
 
 import reactindexHTMLTemplate from '../templates/frontend/react-vite/base/indexHTMLTemplate.js'
 import reactESLINTCongigTemplate from '../templates/frontend/react-vite/base/esLintConfigTemplate.js';
@@ -57,39 +65,28 @@ import reactGitIgnoreTemplate from '../templates/frontend/react-vite/base/gitIgn
 import reactPackageJSONTemplate from '../templates/frontend/react-vite/base/packageJSONTemplate.js';
 import reactViteConfigTemplate from '../templates/frontend/react-vite/base/viteConfigTemplate.js';
 
-
-
-
-
 /**
- * createProjectStructure
- *
- * Create a new project scaffold at `process.cwd()/projectName`.
- *
- * Parameters:
- * - projectName: string - name of the directory to create
- * - includeAuthentication: boolean - include auth templates (models, routes, controllers, middleware)
- * - includeValidation: boolean - include validation middleware and templates
- * - includeErrorHandler: boolean - include error handler middleware and AppError util
- *
- * The function writes files and creates directories synchronously using
- * the template functions imported above.
+ * generateProject
  */
 const generateProject = (answers) => {
 
     // Base path for the generated project
     const baseDirBackendExpress = path.join(process.cwd(), answers.projectName, "backend");
 
-    // Create top-level and common subdirectories (idempotent due to { recursive: true })
-    const file = fs.mkdirSync(baseDirBackendExpress, { recursive: true });
-    const srcDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src'), { recursive: true });
-    const routesDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'routes'), { recursive: true });
-    const controllersDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'controllers'), { recursive: true });
-    const modelsDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'models'), { recursive: true });
-    const middlewaresDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'middlewares'), { recursive: true });
-    const configDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'config'), { recursive: true });
-    const utilsDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils'), { recursive: true });
-    const testsDir = fs.mkdirSync(path.join(baseDirBackendExpress, 'tests'), { recursive: true });
+    // Create subdirectories
+    fs.mkdirSync(baseDirBackendExpress, { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'routes'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'controllers'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'models'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'middlewares'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'config'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'services'), { recursive: true });
+    fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils'), { recursive: true });
+    
+    const testsDir = path.join(baseDirBackendExpress, 'tests');
+    const testsAuthDir = path.join(testsDir, 'auth');
+    fs.mkdirSync(testsAuthDir, { recursive: true });
 
     // --- Authentication-related files ---
     if(answers.includeAuthentication) {
@@ -100,14 +97,43 @@ const generateProject = (answers) => {
         const AuthMiddlewareContent = getAuthMiddlewareContent();
         const envValidationContent = envValidationTemplate();
         const userSeederContent = userSeederTemplate()
+        const cookieConfigContent = cookieConfigTemplate();
+        const csrfMiddlewareContent = csrfMiddlewareTemplate();
+        const rateLimitMiddlewareContent = rateLimitMiddlewareTemplate();
+        const refreshTokenModelContent = refreshTokenModelTemplate();
+        const authServiceContent = authServiceTemplate();
+        const tokenServiceContent = tokenServiceTemplate();
+        const csrfUtilContent = csrfTemplate();
+        const durationUtilContent = durationTemplate();
 
-        // Write the auth-related files to the scaffold
+        // Write the auth-related files
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "middlewares", "auth.middleware.js"), AuthMiddlewareContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "middlewares", "csrf.middleware.js"), csrfMiddlewareContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "middlewares", "rateLimit.middleware.js"), rateLimitMiddlewareContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "models", "user.model.js"), userModelContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "models", "refreshToken.model.js"), refreshTokenModelContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "routes", "auth.routes.js"), authRoutesContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "controllers", "auth.controller.js"), authControllerContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "config", "cookie.config.js"), cookieConfigContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "auth.service.js"), authServiceContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "token.service.js"), tokenServiceContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "csrf.js"), csrfUtilContent)
+        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "duration.js"), durationUtilContent)
 
-        // Ensure validation and seeders folders exist and write their templates
+        // Write test files
+        fs.writeFileSync(path.join(baseDirBackendExpress, "vitest.config.js"), vitestConfigTemplate())
+        fs.writeFileSync(path.join(baseDirBackendExpress, ".env.test"), envTestTemplate())
+        fs.writeFileSync(path.join(testsDir, "setup.js"), setupTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "signup.test.js"), signupTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "signin.test.js"), signinTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "signout.test.js"), signoutTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "refresh.test.js"), refreshTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "accessToken.test.js"), accessTokenTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "csrf.test.js"), csrfTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "rateLimit.test.js"), rateLimitTestTemplate())
+        fs.writeFileSync(path.join(testsAuthDir, "profile.test.js"), profileTestTemplate())
+
+        // Validation & Seeders
         fs.mkdirSync(path.join(baseDirBackendExpress, 'src', 'utils', 'validation'), { recursive: true })
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "validation", "env.validation.js"), envValidationContent)
         
@@ -150,11 +176,7 @@ const generateProject = (answers) => {
     const packageJsonContent = packageJsonTemplate(answers);
     fs.writeFileSync(path.join(baseDirBackendExpress, "package.json"), packageJsonContent)
 
-
     // --- React (frontend) templates embedding ---
-    // Note: this part creates a simple frontend structure inside the same
-    // project directory. If you plan to split frontend/backend into separate
-    // repos, change this behavior.
     const reactAppTemplateContent = reactAppTemplate()
     const reactMainTemplateContent = reactMainTemplate()
     const indexCSSTemplateContent = indexCSSTemplate()
@@ -171,28 +193,22 @@ const generateProject = (answers) => {
     const reactAuthContextTemplateContent = reactAuthContextTemplate()
     const reactProtectedRouteTemplateContent = reactProtectedRouteTemplate()
     const reactAxiosApiTemplateContent = reactAxiosApiTemplate()
+    const reactCsrfApiTemplateContent = reactCsrfApiTemplate()
 
-    
     const baseDirReact = path.join(process.cwd(), answers.projectName, "frontend")
 
-    // Create frontend folders under the same project root
-    const reactFile = mkdirSync(baseDirReact, { recursive: true })
+    mkdirSync(baseDirReact, { recursive: true })
     const reactSrcDir = mkdirSync(path.join(baseDirReact, "src"), { recursive: true })
-    const assetsDir = mkdirSync(path.join(reactSrcDir, "assets"), { recursive: true })
-    const componentsDir = mkdirSync(path.join(reactSrcDir, "components"), { recursive: true })
-    const layoutsDir = mkdirSync(path.join(reactSrcDir, "layouts"), { recursive: true })
+    mkdirSync(path.join(reactSrcDir, "assets"), { recursive: true })
+    mkdirSync(path.join(reactSrcDir, "components"), { recursive: true })
+    mkdirSync(path.join(reactSrcDir, "layouts"), { recursive: true })
     const reactRoutesDir = mkdirSync(path.join(reactSrcDir, "routes"), { recursive: true })
     const reactServicesDir = mkdirSync(path.join(reactSrcDir, "services"), { recursive: true })
-    const reactHooksDir = mkdirSync(path.join(reactSrcDir, "hooks"), { recursive: true })
-    const reactUtilsDir = mkdirSync(path.join(reactSrcDir, "utils"), { recursive: true })
+    mkdirSync(path.join(reactSrcDir, "hooks"), { recursive: true })
+    mkdirSync(path.join(reactSrcDir, "utils"), { recursive: true })
     const reactContextDir = mkdirSync(path.join(reactSrcDir, "context"), { recursive: true })
     const pagesDir = mkdirSync(path.join(reactSrcDir, "pages"), { recursive: true })
     const authPageDir = mkdirSync(path.join(pagesDir, "auth"), { recursive: true })
-
-    // NOTE: writeFileSync expects a path string; these calls currently pass
-    // the directory variable as the first argument. If you run into issues
-    // creating the frontend files, update the arguments to use
-    // path.join(reactSrcDir, 'app.jsx') etc.
 
     fs.writeFileSync(path.join(baseDirReact, "eslint.config.js"), esLintConfigTemplateContent)
     fs.writeFileSync(path.join(baseDirReact, "index.html"), ReactIndexHTMLTemplateContent)
@@ -211,12 +227,7 @@ const generateProject = (answers) => {
     fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplateContent)
     fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplateContent)
     fs.writeFileSync(path.join(reactServicesDir, "Api.jsx"), reactAxiosApiTemplateContent)
-
-
-    
-
-
-
+    fs.writeFileSync(path.join(reactServicesDir, "csrf.jsx"), reactCsrfApiTemplateContent)
 }
 
 export default generateProject;
