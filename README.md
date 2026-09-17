@@ -13,6 +13,10 @@ This project helps you skip the repetitive setup for new applications by generat
 - ⚛️ React + Vite frontend scaffold with pages, context, protected routes, and API service layer
 - 📦 Auto-generated package files for both backend and frontend
 - 🔑 `.env` templates for API and database configuration
+- 🩺 Built-in `GET /health`, `GET /version` and `GET /api-info` routes, shown live in the frontend
+- 📝 Optional winston request logging (colorized in development, JSON in production)
+- 🛡️ Optional role-based access control (`user` / `admin`) with an admin panel in the frontend
+- 🐳 Optional Docker setup: `Dockerfile`, `.dockerignore` and `docker-compose.yml` (API + MongoDB, plus an nginx frontend when included)
 
 ## Installation & Usage
 
@@ -26,8 +30,12 @@ You will be prompted for project details such as:
 
 - project name
 - whether to include authentication
+- whether to include role-based access control (only asked when authentication is enabled)
 - whether to include validation
-- whether to include an error handler
+- whether to include an error handler (always included with authentication)
+- whether to include request logging (winston)
+- whether to include a Docker setup
+- whether to include a frontend
 
 The generator then creates a project folder with both a backend and a frontend structure.
 
@@ -106,6 +114,26 @@ If authentication is enabled, the generated backend includes:
 
 If validation is enabled, the generator also includes middleware and validation helpers.
 
+Authentication also generates refresh-token rotation (`POST /api/auth/refresh`), CSRF protection, rate limiting, a seeder (`npm run seed`) and a Vitest + Supertest suite (`npm test`, needs a local MongoDB).
+
+If role-based access control is enabled:
+
+- users get a `role` field (`user` by default; signup cannot set it)
+- `roleMiddleware('admin')` protects routes after `authMiddleware`
+- `GET /api/admin/users` and `PATCH /api/admin/users/:id/role` are available to admins
+- `npm run make-admin -- you@example.com` promotes your first admin
+- the frontend adds an `/admin` page and `<ProtectedRoute allowedRoles={['admin']}>`
+
+### Docker
+
+If Docker setup is enabled, run everything from the project root:
+
+```bash
+docker compose up --build
+```
+
+The API is available on `http://localhost:3000` and, when a frontend is included, the app on `http://localhost:8080` (nginx proxies `/api` and the health routes to the backend). Secrets are read from `backend/.env` at runtime and are never copied into the image.
+
 ## Project Structure
 
 The repository itself is organized around the generator templates and examples:
@@ -120,8 +148,8 @@ The repository itself is organized around the generator templates and examples:
 
 - [ ] TypeScript support
 - [ ] More frontend stacks and templates
-- [ ] Testing setup for generated apps
-- [ ] Docker support
+- [x] Testing setup for generated apps
+- [x] Docker support
 - [ ] File upload and media handling
 
 ## Team

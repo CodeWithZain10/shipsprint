@@ -1,9 +1,17 @@
-const authControllerTemplate = () => {
+const authControllerTemplate = (includeRBAC) => {
     return `import { accessTokenCookieOptions, refreshTokenCookieOptions } from '../config/cookie.config.js'
 import { signupUser as signupUserService, signinUser as signinUserService, signOutUser as signoutUserService } from '../services/auth.service.js'
 import { refreshAccessToken } from '../services/token.service.js'
 import { generateCsrfToken } from '../utils/csrf.js'
 import { UnauthorizedError } from '../utils/errors/AppError.js'
+
+const toUserResponse = (user) => ({
+    _id: user._id,
+    user: user.username,
+    username: user.username,
+    email: user.email${includeRBAC ? `,
+    role: user.role` : ""}
+})
 
 export const signupUser = async (req, res) => {
     const data = req.body
@@ -12,14 +20,10 @@ export const signupUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, accessTokenCookieOptions)
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
-        
+
     res.status(201).json({
         message: "User created successfully",
-        user: {
-            _id: user._id,
-            user: user.username,
-            email: user.email
-        }
+        user: toUserResponse(user)
     })
 }
 
@@ -27,17 +31,13 @@ export const signinUser = async (req, res) => {
     const data = req.body
 
     const { user, accessToken, refreshToken } = await signinUserService(data)
-        
+
     res.cookie("accessToken", accessToken, accessTokenCookieOptions)
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
 
     res.status(200).json({
         message: "User logged in successfully",
-        user: {
-            _id: user._id,
-            user: user.username,
-            email: user.email
-        }
+        user: toUserResponse(user)
     })
 }
 
@@ -61,7 +61,7 @@ export const refreshAccessTokenController = async (req, res) => {
 
     if(!rawRefreshToken){
         throw new UnauthorizedError("Unauthorized")
-    } 
+    }
 
     const { accessToken, refreshToken } = await refreshAccessToken(rawRefreshToken)
 
@@ -72,7 +72,10 @@ export const refreshAccessTokenController = async (req, res) => {
 }
 
 export const profile = (req, res) => {
-    res.json({message: "working"})
+    res.json({
+        message: "working",
+        user: toUserResponse(req.user)
+    })
 }
 
 export const getCsrfToken = (req, res) => {

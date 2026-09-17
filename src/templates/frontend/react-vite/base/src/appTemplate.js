@@ -1,15 +1,18 @@
-const reactAppTemplate = () => {
+const reactAppTemplate = (answers) => {
+const includeAuthentication = answers.includeBackend && answers.includeAuthentication
+
 return `import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
+${includeAuthentication ? `import Signin from './pages/auth/Signin';
+import Signup from './pages/auth/Signup';
 import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './routes/ProtectedRoute';
+import ProtectedRoute from './routes/ProtectedRoute';` : ''}${answers.includeRBAC ? `
+import Admin from './pages/Admin';` : ''}
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home />} />${includeAuthentication ? `
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       <Route
@@ -19,7 +22,15 @@ function App() {
             <Dashboard />
           </ProtectedRoute>
         }
-      />
+      />` : ''}${answers.includeRBAC ? `
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />` : ''}
     </Routes>
   );
 }

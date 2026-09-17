@@ -1,4 +1,4 @@
-const userSeederTemplate = () => {
+const userSeederTemplate = (includeRBAC) => {
 return `import { faker } from "@faker-js/faker";
 import userModel from '../../models/user.model.js'
 import connectDB from '../../config/db.js'
@@ -14,12 +14,20 @@ const fakeUserSeed = async () => {
             const user = await userModel.create({
                 username: faker.internet.username(),
                 email: faker.internet.email(),
-                password: "Test@1234", 
+                password: "Test@1234",
             });
         }
-
+${includeRBAC ? `
+        await userModel.create({
+            username: "admin",
+            email: "admin@example.com",
+            password: "Admin@1234",
+            role: "admin"
+        });
+        console.log("Seeded admin user: admin@example.com / Admin@1234");
+` : ""}
         process.exit(0);
-        
+
     } catch (error) {
         console.error('Error seeding users:', error);
         process.exit(1);

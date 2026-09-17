@@ -1,4 +1,4 @@
-const reactAuthContextTemplate = () => {
+const reactAuthContextTemplate = (includeRBAC) => {
 return `import { createContext, useContext, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
       const res = await api.get('/auth/profile');
       setUser(res.data.user);
       setIsAuthenticated(true);
-    } catch (err) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -79,9 +79,11 @@ export function AuthProvider({ children }) {
     }
   };
 
-  return (
+${includeRBAC ? `  const hasRole = (...roles) => roles.includes(user?.role);
+
+` : ''}  return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, authLoading, error, signin, signup, signout, checkAuth }}
+      value={{ user, isAuthenticated, authLoading, error, signin, signup, signout, checkAuth${includeRBAC ? ', hasRole' : ''} }}
     >
       {children}
     </AuthContext.Provider>

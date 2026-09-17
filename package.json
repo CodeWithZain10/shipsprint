@@ -1,6 +1,6 @@
 {
   "name": "create-shipsprint",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modern full-stack project scaffolding CLI",
   "bin": {
     "create-shipsprint": "bin/cli.js"

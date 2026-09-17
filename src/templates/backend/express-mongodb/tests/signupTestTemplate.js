@@ -1,4 +1,4 @@
-const signupTestTemplate = () => {
+const signupTestTemplate = (includeValidation) => {
     return `import app from '../../src/app.js'
 import supertest from 'supertest'
 import { test, expect } from 'vitest'
@@ -60,7 +60,7 @@ test('rejects signup when username already exists', async () => {
     expect(response.status).toBe(422)
 })
 
-test('rejects signup when email is invalid', async () => {
+${includeValidation ? `test('rejects signup when email is invalid', async () => {
     const response = await api.post('/api/auth/signup').send({
         username: 'shipsprint.invalidemail',
         email: 'shipsprintgmail.com',
@@ -112,7 +112,7 @@ test('rejects signup when password is too short', async () => {
     expect(response.body.message).toBe('"password" length must be at least 6 characters long')
 })
 
-test('creates user when password has minimum allowed length', async () => {
+` : ""}test('creates user when password has minimum allowed length', async () => {
     const response = await api.post('/api/auth/signup').send({
         username: 'shipsprint.minpassword',
         email: 'shipsprint.minpassword@gmail.com',

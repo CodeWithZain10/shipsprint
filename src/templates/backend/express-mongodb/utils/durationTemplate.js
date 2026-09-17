@@ -1,7 +1,7 @@
 const durationTemplate = () => {
     return `export const parseDuration = (value) => {
 
-    const regx = /^(\d+)(ms|s|m|h|d)$/
+    const regx = /^(\\d+)(ms|s|m|h|d)$/
     const matched = value.match(regx)
     
     if(matched == null) throw new Error('invalid values')
