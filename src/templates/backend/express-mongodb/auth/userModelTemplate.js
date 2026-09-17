@@ -1,12 +1,15 @@
-const userModelTemplate = () => {
+const userModelTemplate = (includeRBAC) => {
 return `import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
-
+${includeRBAC ? `
+export const ROLES = ['user', 'admin']
+` : ""}
 const UserSchema = new mongoose.Schema({
 
     username: {
         type: String,
         required: [true, 'Please provide a username'],
+        trim: true,
         unique: true,
     },
     email: {
@@ -14,7 +17,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please provide an email'],
         trim: true,
         lowercase: true,
-        match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid Email Address"],
+        match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/, "Invalid Email Address"],
         unique: [true, "Email is already exists"]
     },
     password: {
@@ -22,7 +25,12 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please provide a password'],
         minlength: [6, 'Password must be at least 6 characters long'],
         select: false
-    }
+    }${includeRBAC ? `,
+    role: {
+        type: String,
+        enum: ROLES,
+        default: 'user'
+    }` : ""}
 
 })
 
@@ -39,7 +47,7 @@ UserSchema.pre("save", async function (next){
 })
 
 UserSchema.methods.comparePassword = async function(password) {
-    
+
     return bcrypt.compare(password, this.password)
 
 }

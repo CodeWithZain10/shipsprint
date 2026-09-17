@@ -1,4 +1,4 @@
-const signinTestTemplate = () => {
+const signinTestTemplate = (includeValidation) => {
     return `import app from '../../src/app.js'
 import supertest from 'supertest'
 import { test, expect } from 'vitest'
@@ -55,7 +55,7 @@ test("rejects signin when password is incorrect", async () => {
     expect(response.body.message).toBe("Invalid username or password")
 })
 
-test("rejects signin when email is empty", async () => {
+${includeValidation ? `test("rejects signin when email is empty", async () => {
     const response = await api
         .post('/api/auth/signin')
         .send({
@@ -161,7 +161,7 @@ test("rejects signin when password is too short", async () => {
     expect(response.body.message).toBe('"password" length must be at least 6 characters long')
 })
 
-test("rejects signin when password is too long", async () => {
+` : ""}test("rejects signin when password is too long", async () => {
     const response = await api
         .post('/api/auth/signin')
         .send({

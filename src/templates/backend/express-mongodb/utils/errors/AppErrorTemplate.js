@@ -1,4 +1,4 @@
-const appErrorTemplate = (message, statusCode) => {
+const appErrorTemplate = () => {
     return`
 
 export class AppError extends Error {
@@ -6,7 +6,7 @@ export class AppError extends Error {
     constructor(message, statusCode){
         super(message);
         this.statusCode = statusCode;
-        this.status = '${statusCode}'.startsWith('4') ? 'fail' : 'error';
+        this.status = \`\${statusCode}\`.startsWith('4') ? 'fail' : 'error';
         this.isOperational = true;
         AppError.captureStackTrace(this, this.constructor);
     }
@@ -15,7 +15,7 @@ export class AppError extends Error {
 
 export class BadRequestError extends AppError {
     constructor(message){
-        super(message, 400); 
+        super(message, 400);
     }
 }
 
@@ -46,6 +46,24 @@ export class ValidationError extends AppError{
 export class ForbiddenError extends AppError{
     constructor(message){
         super(message, 403);
+    }
+}
+
+export class TokenExpiredError extends AppError {
+    constructor(message = 'Access token expired') {
+        super(message, 401);
+    }
+}
+
+export class InvalidTokenError extends AppError {
+    constructor(message = 'Invalid access token') {
+        super(message, 401);
+    }
+}
+
+export class TokenNotActiveError extends AppError {
+    constructor(message = 'Token is not active yet') {
+        super(message, 401);
     }
 }
 `

@@ -1,5 +1,5 @@
 const envTemplate = (includeAuthentication) => {
-    return `PORT=5000
+    return `PORT=3000
 MONGO_URI=mongodb://localhost:27017/shipsprint-app
 CORS_ORIGIN=http://localhost:5173
 ${includeAuthentication ? `ACCESS_TOKEN_SECRET=${generateRandomSecret()}

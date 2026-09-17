@@ -1,16 +1,16 @@
-const reactHomePageTemplate = () => {
-return `import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+const reactHomePageTemplate = (answers) => {
+const includeAuthentication = answers.includeBackend && answers.includeAuthentication
+
+return `${includeAuthentication ? "import { Link } from 'react-router-dom';\nimport { useAuth } from '../context/AuthContext';\n" : ""}import SystemStatus from '../components/SystemStatus';
 
 function Home() {
-  const { isAuthenticated, user } = useAuth();
-
+${includeAuthentication ? "  const { isAuthenticated } = useAuth();\n" : ""}
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-gray-100 px-4">
+      <h1 className="text-3xl font-bold text-gray-800">
         Welcome to ShipSprint
       </h1>
-
+${includeAuthentication ? `
       {isAuthenticated ? (
         <div className="flex gap-4">
           <Link to="/dashboard" className="bg-blue-600 text-white px-4 py-2 rounded-lg">
@@ -27,6 +27,8 @@ function Home() {
           </Link>
         </div>
       )}
+` : ""}
+      <SystemStatus />
     </div>
   );
 }

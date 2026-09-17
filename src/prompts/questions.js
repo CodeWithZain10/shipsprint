@@ -15,21 +15,43 @@ const questions = [
         name: "includeAuthentication",
         message: "Do you want to include authentication?",
         default: false,
-        when: (answers) => answers.includeBackend   
+        when: (answers) => answers.includeBackend
+    },
+    {
+      type: 'confirm',
+      name: 'includeRBAC',
+      message: 'Do you want to include role-based access control (user/admin roles)?',
+      default: false,
+      when: (answers) => answers.includeBackend && answers.includeAuthentication
     },
     {
       type: 'confirm',
       name: 'includeValidation',
       message: 'Do you want to include validation?',
       default: false,
-      when: (answers) => answers.includeBackend 
+      when: (answers) => answers.includeBackend
     },
     {
       type: 'confirm',
       name: 'includeErrorHandler',
       message: 'Do you want to include a custom error handler?',
       default: false,
-      when: (answers) => answers.includeBackend  
+      // Authentication always ships with the error handler it depends on
+      when: (answers) => answers.includeBackend && !answers.includeAuthentication
+    },
+    {
+      type: 'confirm',
+      name: 'includeLogger',
+      message: 'Do you want to include request logging (winston)?',
+      default: false,
+      when: (answers) => answers.includeBackend
+    },
+    {
+      type: 'confirm',
+      name: 'includeDocker',
+      message: 'Do you want to include Docker setup (Dockerfile + docker-compose with MongoDB)?',
+      default: false,
+      when: (answers) => answers.includeBackend
     },
     {
       type: 'confirm',

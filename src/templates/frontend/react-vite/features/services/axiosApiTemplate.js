@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 function getCsrfTokenFromCookie() {
-  const match = document.cookie.match(/(?:^|;\s*)csrfToken=([^;]*)/);
+  const match = document.cookie.match(/(?:^|;\\s*)csrfToken=([^;]*)/);
   return match ? decodeURIComponent(match[1]) : null;
 }
 
