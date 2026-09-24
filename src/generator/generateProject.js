@@ -65,6 +65,8 @@ import reactSignInPageTemplate from '../templates/frontend/react-vite/features/p
 import reactSignupPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signupPageTemplate.js';
 import reactDashboardPageTemplate from '../templates/frontend/react-vite/features/pages/dashboardPageTemplate.js';
 import reactHomePageTemplate from '../templates/frontend/react-vite/features/pages/homePageTemplate.js';
+import reactForgotPasswordPageTemplate from '../templates/frontend/react-vite/features/pages/forgotPasswordPageTemplate.js';
+import reactResetPasswordPageTemplate from '../templates/frontend/react-vite/features/pages/resetPasswordPageTemplate.js';
 import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
 import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
 import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
@@ -281,6 +283,8 @@ const generateFrontend = (answers) => {
         fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplate())
         fs.writeFileSync(path.join(authPageDir, 'Signup.jsx'), reactSignupPageTemplate())
         fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplate(answers.includeRBAC))
+        fs.writeFileSync(path.join(pagesDir, 'ForgotPassword.jsx'), reactForgotPasswordPageTemplate())
+        fs.writeFileSync(path.join(pagesDir, 'ResetPassword.jsx'), reactResetPasswordPageTemplate())
         fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplate(answers.includeRBAC))
         fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplate(answers.includeRBAC))
         fs.writeFileSync(path.join(reactServicesDir, "api.js"), reactAxiosApiTemplate())
