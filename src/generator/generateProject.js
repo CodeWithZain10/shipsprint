@@ -30,6 +30,7 @@ import rateLimitMiddlewareTemplate from '../templates/backend/express-mongodb/mi
 import refreshTokenModelTemplate from '../templates/backend/express-mongodb/auth/refreshTokenModelTemplate.js';
 import authServiceTemplate from '../templates/backend/express-mongodb/services/authServiceTemplate.js';
 import tokenServiceTemplate from '../templates/backend/express-mongodb/services/tokenServiceTemplate.js';
+import emailServiceTemplate from '../templates/backend/express-mongodb/services/emailServiceTemplate.js';
 import csrfTemplate from '../templates/backend/express-mongodb/utils/csrfTemplate.js';
 import durationTemplate from '../templates/backend/express-mongodb/utils/durationTemplate.js';
 import healthRoutesTemplate from '../templates/backend/express-mongodb/routes/healthRoutesTemplate.js';
@@ -65,11 +66,14 @@ import reactSignInPageTemplate from '../templates/frontend/react-vite/features/p
 import reactSignupPageTemplate from '../templates/frontend/react-vite/features/pages/auth/signupPageTemplate.js';
 import reactDashboardPageTemplate from '../templates/frontend/react-vite/features/pages/dashboardPageTemplate.js';
 import reactHomePageTemplate from '../templates/frontend/react-vite/features/pages/homePageTemplate.js';
+import reactForgotPasswordPageTemplate from '../templates/frontend/react-vite/features/pages/forgotPasswordPageTemplate.js';
+import reactResetPasswordPageTemplate from '../templates/frontend/react-vite/features/pages/resetPasswordPageTemplate.js';
 import reactAuthContextTemplate from '../templates/frontend/react-vite/features/context/authContextTemplate.js';
 import reactProtectedRouteTemplate from '../templates/frontend/react-vite/features/routes/protectedRouteTemplate.js';
 import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
 import reactCsrfApiTemplate from '../templates/frontend/react-vite/features/services/csrfApiTemplate.js';
 import reactSystemApiTemplate from '../templates/frontend/react-vite/features/services/systemApiTemplate.js';
+import reactVerificationBannerTemplate from '../template/frontend/react-vite/features/components/verificationBannerTemplate.js'
 import reactSystemStatusTemplate from '../templates/frontend/react-vite/features/components/systemStatusTemplate.js';
 import reactAdminPageTemplate from '../templates/frontend/react-vite/features/pages/adminPageTemplate.js';
 import reactDockerfileTemplate from '../templates/frontend/react-vite/docker/dockerfileTemplate.js';
@@ -149,8 +153,8 @@ const generateBackend = (answers) => {
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "routes", "auth.routes.js"), authRoutesContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "controllers", "auth.controller.js"), authControllerContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "config", "cookie.config.js"), cookieConfigContent)
-        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "auth.service.js"), authServiceContent)
-        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "token.service.js"), tokenServiceContent)
+       fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "auth.service.js"), authServiceContent)
+       fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "token.service.js"), tokenServiceContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "csrf.js"), csrfUtilContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "duration.js"), durationUtilContent)
 
@@ -195,6 +199,10 @@ const generateBackend = (answers) => {
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "validation", "auth.validation.js"), authValidationContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "middlewares", "validate.middleware.js"), validateMiddlewareContent)
     }
+    // --- Email-related files ---
+    if(answers.includeEmail) {
+    fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "email.service.js"), emailServiceTemplate())
+}
 
     // --- Error handler files (auth depends on AppError + errorHandler) ---
     if(answers.includeErrorHandler || answers.includeAuthentication) {
@@ -227,7 +235,7 @@ const generateBackend = (answers) => {
     fs.writeFileSync(path.join(baseDirBackendExpress, "src", "config", "db.js"), dbConfigContent)
 
     // Environment and package manifest
-    const envContent = envTemplate(answers.includeAuthentication);
+    const envContent = envTemplate(answers.includeAuthentication, answers.projectName, answers.includeEmail);
     fs.writeFileSync(path.join(baseDirBackendExpress, ".env"), envContent)
 
     const packageJsonContent = packageJsonTemplate(answers);
@@ -271,6 +279,7 @@ const generateFrontend = (answers) => {
     // --- System status (health / version / api-info routes) ---
     fs.writeFileSync(path.join(reactServicesDir, "system.js"), reactSystemApiTemplate())
     fs.writeFileSync(path.join(reactComponentsDir, "SystemStatus.jsx"), reactSystemStatusTemplate())
+    fs.writeFileSync(path.join(reactComponentsDir, "VerificationBanner.jsx"), reactVerificationBannerTemplate())
 
     // --- Authentication UI ---
     if(includeAuthentication) {
@@ -281,6 +290,8 @@ const generateFrontend = (answers) => {
         fs.writeFileSync(path.join(authPageDir, 'Signin.jsx'), reactSignInPageTemplate())
         fs.writeFileSync(path.join(authPageDir, 'Signup.jsx'), reactSignupPageTemplate())
         fs.writeFileSync(path.join(pagesDir, 'Dashboard.jsx'), reactDashboardPageTemplate(answers.includeRBAC))
+        fs.writeFileSync(path.join(pagesDir, 'ForgotPassword.jsx'), reactForgotPasswordPageTemplate())
+        fs.writeFileSync(path.join(pagesDir, 'ResetPassword.jsx'), reactResetPasswordPageTemplate())
         fs.writeFileSync(path.join(reactContextDir, "AuthContext.jsx"), reactAuthContextTemplate(answers.includeRBAC))
         fs.writeFileSync(path.join(reactRoutesDir, "ProtectedRoute.jsx"), reactProtectedRouteTemplate(answers.includeRBAC))
         fs.writeFileSync(path.join(reactServicesDir, "api.js"), reactAxiosApiTemplate())
