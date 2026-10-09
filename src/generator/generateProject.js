@@ -30,6 +30,7 @@ import rateLimitMiddlewareTemplate from '../templates/backend/express-mongodb/mi
 import refreshTokenModelTemplate from '../templates/backend/express-mongodb/auth/refreshTokenModelTemplate.js';
 import authServiceTemplate from '../templates/backend/express-mongodb/services/authServiceTemplate.js';
 import tokenServiceTemplate from '../templates/backend/express-mongodb/services/tokenServiceTemplate.js';
+import emailServiceTemplate from '../templates/backend/express-mongodb/services/emailServiceTemplate.js';
 import csrfTemplate from '../templates/backend/express-mongodb/utils/csrfTemplate.js';
 import durationTemplate from '../templates/backend/express-mongodb/utils/durationTemplate.js';
 import healthRoutesTemplate from '../templates/backend/express-mongodb/routes/healthRoutesTemplate.js';
@@ -152,8 +153,8 @@ const generateBackend = (answers) => {
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "routes", "auth.routes.js"), authRoutesContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "controllers", "auth.controller.js"), authControllerContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "config", "cookie.config.js"), cookieConfigContent)
-        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "auth.service.js"), authServiceContent)
-        fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "token.service.js"), tokenServiceContent)
+       fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "auth.service.js"), authServiceContent)
+       fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "token.service.js"), tokenServiceContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "csrf.js"), csrfUtilContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "duration.js"), durationUtilContent)
 
@@ -198,6 +199,10 @@ const generateBackend = (answers) => {
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "utils", "validation", "auth.validation.js"), authValidationContent)
         fs.writeFileSync(path.join(baseDirBackendExpress, "src", "middlewares", "validate.middleware.js"), validateMiddlewareContent)
     }
+    // --- Email-related files ---
+    if(answers.includeEmail) {
+    fs.writeFileSync(path.join(baseDirBackendExpress, "src", "services", "email.service.js"), emailServiceTemplate())
+}
 
     // --- Error handler files (auth depends on AppError + errorHandler) ---
     if(answers.includeErrorHandler || answers.includeAuthentication) {
@@ -230,7 +235,7 @@ const generateBackend = (answers) => {
     fs.writeFileSync(path.join(baseDirBackendExpress, "src", "config", "db.js"), dbConfigContent)
 
     // Environment and package manifest
-    const envContent = envTemplate(answers.includeAuthentication);
+    const envContent = envTemplate(answers.includeAuthentication, answers.projectName, answers.includeEmail);
     fs.writeFileSync(path.join(baseDirBackendExpress, ".env"), envContent)
 
     const packageJsonContent = packageJsonTemplate(answers);

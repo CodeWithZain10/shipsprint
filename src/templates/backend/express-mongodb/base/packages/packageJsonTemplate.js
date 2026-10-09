@@ -22,7 +22,8 @@ const packageJsonTemplate = (answers) => {
     "joi": "^18.2.3",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.8.0"${answers.includeLogger ? `,
-    "winston": "^3.19.0"` : ""}
+    "winston": "^3.19.0"` : ""}${answers.includeEmail ? `,
+    "nodemailer": "^6.10.1"` : ""}
   },
   "devDependencies": {${answers.includeAuthentication ? `
     "@faker-js/faker": "^10.5.0",` : ""}

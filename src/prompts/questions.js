@@ -19,6 +19,13 @@ const questions = [
     },
     {
       type: 'confirm',
+      name: 'includeEmail',
+      message: 'Do you want to include email sending (nodemailer)?',
+      default: false,
+      when: (answers) => answers.includeBackend && answers.includeAuthentication
+    },
+    {
+      type: 'confirm',
       name: 'includeRBAC',
       message: 'Do you want to include role-based access control (user/admin roles)?',
       default: false,
