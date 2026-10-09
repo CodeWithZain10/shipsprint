@@ -72,6 +72,7 @@ import reactProtectedRouteTemplate from '../templates/frontend/react-vite/featur
 import reactAxiosApiTemplate from '../templates/frontend/react-vite/features/services/axiosApiTemplate.js';
 import reactCsrfApiTemplate from '../templates/frontend/react-vite/features/services/csrfApiTemplate.js';
 import reactSystemApiTemplate from '../templates/frontend/react-vite/features/services/systemApiTemplate.js';
+import reactVerificationBannerTemplate from '../template/frontend/react-vite/features/components/verificationBannerTemplate.js'
 import reactSystemStatusTemplate from '../templates/frontend/react-vite/features/components/systemStatusTemplate.js';
 import reactAdminPageTemplate from '../templates/frontend/react-vite/features/pages/adminPageTemplate.js';
 import reactDockerfileTemplate from '../templates/frontend/react-vite/docker/dockerfileTemplate.js';
@@ -273,6 +274,7 @@ const generateFrontend = (answers) => {
     // --- System status (health / version / api-info routes) ---
     fs.writeFileSync(path.join(reactServicesDir, "system.js"), reactSystemApiTemplate())
     fs.writeFileSync(path.join(reactComponentsDir, "SystemStatus.jsx"), reactSystemStatusTemplate())
+    fs.writeFileSync(path.join(reactComponentsDir, "VerificationBanner.jsx"), reactVerificationBannerTemplate())
 
     // --- Authentication UI ---
     if(includeAuthentication) {

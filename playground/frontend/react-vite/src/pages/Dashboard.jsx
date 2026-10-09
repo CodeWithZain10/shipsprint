@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import VerificationBanner from '../components/VerificationBanner';
 
 function Dashboard() {
   const { signout, user } = useAuth();
@@ -21,6 +22,9 @@ function Dashboard() {
           Logout
         </button>
       </div>
+      { user && !user.emailVerified && (
+        <VerificationBanner email={user.email} />
+      )}
       <p className="text-gray-600">Welcome{user?.username ? `, ${user.username}` : ''}!</p>
     </div>
   );
